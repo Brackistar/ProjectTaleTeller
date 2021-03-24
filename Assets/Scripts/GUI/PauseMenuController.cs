@@ -30,6 +30,7 @@ public class PauseMenuController : MonoBehaviour
     private void Awake()
     {
         AudioSource = GetComponent<AudioSource>();
+        isPaused = false;
     }
 
     // Start is called before the first frame update
@@ -38,13 +39,11 @@ public class PauseMenuController : MonoBehaviour
         lastActivePanel = defaultActivePanel.name;
         //AudioSource = GetComponent<AudioSource>();
         AudioSource.ignoreListenerPause = true;
-        isPaused = false;
+        //isPaused = false;
 
         ChangeCharacterPortrait();
         ChangeCharacterHistory();
         ChangeShownAttributes();
-
-
     }
 
     // Update is called once per frame

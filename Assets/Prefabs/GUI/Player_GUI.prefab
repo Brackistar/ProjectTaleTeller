@@ -2086,7 +2086,7 @@ MonoBehaviour:
         m_MethodName: Show_Hide
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 2153413827483714440}
+          m_ObjectArgument: {fileID: 2365312344336013293}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -6917,6 +6917,51 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2153413827676776335}
     m_Modifications:
+    - target: {fileID: 2915014849690638510, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014849690638510, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014849690638510, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014849690638510, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -94.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850541794192, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850541794192, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850541794192, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850541794192, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -61
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850541794192, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 85.9
+      objectReference: {fileID: 0}
     - target: {fileID: 2915014850558275650, guid: 8976f1ceee235f741980cc6965d0de09,
         type: 3}
       propertyPath: m_Name
@@ -7026,6 +7071,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850579180239, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850579180239, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850579180239, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2915014850579180239, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -27
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708734605985405792, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708734605985405792, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708734605985405792, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708734605985405792, guid: 8976f1ceee235f741980cc6965d0de09,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8976f1ceee235f741980cc6965d0de09, type: 3}

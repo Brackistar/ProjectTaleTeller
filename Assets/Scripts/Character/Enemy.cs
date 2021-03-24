@@ -22,7 +22,7 @@ public class Enemy : Character
         base.Start();
 
         GameObject HealthBar = Instantiate<GameObject>(HealthBarPrefab);
-        RectTransform canvas = GameObject.Find("Canvas").GetComponent<RectTransform>();
+        RectTransform canvas = GameObject.Find("HealthBars_Container").GetComponent<RectTransform>();
         HealthBar.GetComponent<EnemyHealthBar>().SetHealthBarData(
             target: this,
             healthBarPanel: canvas);
@@ -53,8 +53,9 @@ public class Enemy : Character
 
     protected override void Death()
     {
-        base.Death();
         gameObject.layer = 9;
+        base.Death();
+        //gameObject.layer = 9;
     }
 
     protected override void OnWeaponAttackHit(Collider2D collider)

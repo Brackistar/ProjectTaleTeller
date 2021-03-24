@@ -33,6 +33,9 @@ public class LevelController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
+        Screen.autorotateToLandscapeLeft = true;
+
         Player.SetWalkSound(
             sound: WalkSound);
         Player.SetJumpSound(
@@ -49,6 +52,11 @@ public class LevelController : MonoBehaviour
         {
             enemy.GetComponent<Enemy>().OnDeath += OnEnemyDeath;
         }
+
+        PauseMenuController.isPaused = true;
+        GameObject.Find("Player_GUI")
+            .GetComponent<PauseMenuController>()
+            .Pause_Resume();
     }
 
     private void OnEnemyDeath(Enemy enemy)
