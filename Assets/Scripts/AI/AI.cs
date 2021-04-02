@@ -12,6 +12,7 @@ public abstract class AI : MonoBehaviour
     [SerializeField]
     [Range(0.1f, 5)]
     protected float DetectionRange;
+    
     public AIState currentState { get; protected set; }
 
     protected virtual void Awake()
@@ -69,6 +70,7 @@ public abstract class AI : MonoBehaviour
         middleRay = new Vector2(x: sidePosition, y: middlePosition);
         bottomRay = new Vector2(x: sidePosition, y: bottomPosition);
 
+        // Actions at 1m sight
         topHit = Physics2D.Raycast(
             origin: topRay,
             direction: direction,
@@ -108,84 +110,58 @@ public abstract class AI : MonoBehaviour
             switch (currentState)
             {
                 case AIState.Combat:
-                    StartCoroutine(CombatAction());
+                    CombatAction();
                     break;
                 case AIState.LowHealth:
-                    StartCoroutine(LowHealth());
+                    LowHealth();
                     break;
                 case AIState.HighHealth:
-                    StartCoroutine(HighHealth());
+                    HighHealth();
                     break;
                 case AIState.AllyLowHealth:
-                    StartCoroutine(AllyLowHealth());
+                    AllyLowHealth();
                     break;
                 case AIState.EnemyLevelHigher:
-                    StartCoroutine(EnemyLevelHigher());
+                    EnemyLevelHigher();
                     break;
                 case AIState.EnemySpoted:
+                    EnemySpoted();
+                    break;
+                case AIState.EnemyOutOfSight:
+                    EnemyOutOfSight();
                     break;
                 default:
-                    StartCoroutine(IdleAction());
+                    IdleAction();
                     break;
             }
             yield return null;
         }
     }
-    protected virtual IEnumerator IdleAction()
+    protected virtual void IdleAction()
     {
-        while (currentState == AIState.Idle)
-        {
-            yield return null;
-        }
     }
-    protected virtual IEnumerator CombatAction()
+    protected virtual void CombatAction()
     {
-        while (currentState == AIState.Combat)
-        {
-            yield return null;
-        }
     }
-    protected virtual IEnumerator LowHealth()
+    protected virtual void LowHealth()
     {
-        while (currentState == AIState.LowHealth)
-        {
-            yield return null;
-        }
     }
-    protected virtual IEnumerator HighHealth()
+    protected virtual void HighHealth()
     {
-        while (currentState == AIState.HighHealth)
-        {
-            yield return null;
-        }
     }
-    protected virtual IEnumerator AllyLowHealth()
+    protected virtual void AllyLowHealth()
     {
-        while (currentState == AIState.AllyLowHealth)
-        {
-            yield return null;
-        }
     }
-    protected virtual IEnumerator EnemyLevelHigher()
+    protected virtual void EnemyLevelHigher()
     {
-        while (currentState == AIState.EnemyLevelHigher)
-        {
-            yield return null;
-        }
     }
-    protected virtual IEnumerator EnemySpoted()
+    protected virtual void EnemySpoted()
     {
-        while (currentState == AIState.EnemySpoted)
-        {
-            yield return null;
-        }
+        isTargetSpoted = true;
     }
-    protected virtual IEnumerator Await()
+    protected virtual void EnemyOutOfSight()
     {
-        while (currentState == AIState.Await)
-        {
-            yield return null;
-        }
+        isTargetSpoted = false;
     }
 }
 public enum AIState
@@ -197,5 +173,5 @@ public enum AIState
     AllyLowHealth,
     EnemyLevelHigher,
     EnemySpoted,
-    Await
+    EnemyOutOfSight
 }

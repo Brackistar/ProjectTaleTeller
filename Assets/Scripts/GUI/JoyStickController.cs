@@ -29,7 +29,19 @@ public class JoyStickController : MonoBehaviour, IDragHandler, IPointerUpHandler
     }
 
     // Update is called once per frame
-    void Update()
+    //void Update()
+    //{
+    //    if (PauseMenuController.isPaused)
+    //        return;
+
+    //    LevelController.Player.Move(
+    //        Direction: new Vector2(
+    //            x: InputDirection.x * ControlSensitivity,
+    //            y: InputDirection.y * ControlSensitivity)
+    //        );
+    //}
+
+    void FixedUpdate()
     {
         if (PauseMenuController.isPaused)
             return;

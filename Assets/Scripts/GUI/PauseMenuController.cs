@@ -41,6 +41,10 @@ public class PauseMenuController : MonoBehaviour
         AudioSource.ignoreListenerPause = true;
         //isPaused = false;
 
+        //transform.Find("No_Button")
+        //    .GetComponent<Button>()
+        //    .onClick.AddListener(GotoMainMenu);
+
         ChangeCharacterPortrait();
         ChangeCharacterHistory();
         ChangeShownAttributes();
@@ -101,18 +105,19 @@ public class PauseMenuController : MonoBehaviour
     {
         if (!isPaused)
         {
-            Time.timeScale = 0;
-            AudioListener.pause = true;
+            //Time.timeScale = 0;
+            //AudioListener.pause = true;
+            LevelController.Pause();
             if (AudioSource.time < 7f)
                 AudioSource.time = 7f;
-
             AudioSource.Play();
         }
         else
         {
-            Time.timeScale = 1;
-            AudioListener.pause = false;
+            //Time.timeScale = 1;
+            //AudioListener.pause = false;
 
+            LevelController.Resume();
             AudioSource.Pause();
         }
 
@@ -121,9 +126,22 @@ public class PauseMenuController : MonoBehaviour
 
     public void Load_Scene(string SceneName)
     {
-        SceneManager.LoadScene(
-            sceneName: SceneName,
-            mode: LoadSceneMode.Single);
+        GameObject.Find("SceneManager")
+            .GetComponent<LoadingManager>()
+            .LoadSceneAsync(SceneName);
+    }
+
+    public void GotoMainMenu()
+    {
+        GameObject.Find("SceneManager")
+            .GetComponent<LoadingManager>()
+            .LoadSceneAsync("MainMenu", true);
+    }
+
+    public void RestartLevel()
+    {
+        string LevelName = SceneManager.GetActiveScene().path;
+        Load_Scene(LevelName);
     }
 
     public void Exit_Game()

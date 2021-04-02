@@ -14,60 +14,49 @@ public class Patroller : AI
     protected PatrolSpeed patrolSpeed;
     protected Vector2 startPosition,
         stopPosition;
+    protected int speed;
 
     protected override void Start()
     {
         Vector2 currentPosition = transform.position;
 
-        startPosition = currentPosition;
+        startPosition = new Vector2(
+            x: currentPosition.x - Distance * 0.5f,
+            y: currentPosition.y); ;
 
         stopPosition = new Vector2(
-            x: currentPosition.x + Distance,
+            x: currentPosition.x + Distance * 0.5f,
             y: currentPosition.y);
 
         CircleCollider2D circleCollider = gameObject.AddComponent<CircleCollider2D>();
         circleCollider.isTrigger = true;
         circleCollider.radius = DetectionRange;
 
+        speed = (int)patrolSpeed;
+
         base.Start();
     }
 
-    protected override IEnumerator IdleAction()
+    protected override void IdleAction()
     {
-        int speed = 0;
-        while (enabled && currentState == AIState.Idle)
-        {
-            if (!isWalking)
-                isWalking = true;
 
-            if (transform.position.x >= stopPosition.x)
-            {
-                speed -= (int)patrolSpeed;
-            }
-            else if (transform.position.x <= startPosition.x)
-            {
-                speed += (int)patrolSpeed;
-            }
-            Enemy.Move(new Vector2(
-                    x: speed,
-                    y: 0));
-            yield return null;
-        }
-        isWalking = false;
+        if (Mathf.Abs(transform.position.x - stopPosition.x)<= 0.25f)
+            speed = -(int)patrolSpeed;
+
+        if (Mathf.Abs(transform.position.x - startPosition.x) <= 0.25f)
+            speed = (int)patrolSpeed;
+
+        Enemy.Move(new Vector2(
+                x: speed,
+                y: 0));
+
     }
 
-    protected override IEnumerator EnemySpoted()
+    protected override void EnemySpoted()
     {
         if ((transform.position - Enemy.Target.transform.position).normalized.x < 0)
             Enemy.FlipX(true);
         currentState = AIState.Combat;
-        return null;
-    }
-
-    protected override IEnumerator Await()
-    {
-        yield return new WaitForSeconds(AttentionSpan);
-        currentState = AIState.Idle;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

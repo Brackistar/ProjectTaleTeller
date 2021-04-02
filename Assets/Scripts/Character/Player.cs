@@ -11,18 +11,31 @@ public class Player : Character
     [TextArea]
     [SerializeField]
     private string History;
+    [Header("Inventory")]
+    [SerializeField]
+    private Weapon.WeaponKind WeaponKind;
     public int NextLevelXP { get; private set; }
     public bool isLevelUp { get; private set; }
+
+    protected override void Awake()
+    {
+        if (NextLevelXP <= 0)
+            NextLevelXP = GetNextLevelXP();
+        base.Awake();
+    }
 
     protected override void Start()
     {
         if (gameObject.layer != 8)
             gameObject.layer = 8;
 
+        //if (NextLevelXP <= 0)
+        //    NextLevelXP = GetNextLevelXP();
+
         base.Start();
 
-        gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
-        gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
+        //gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
+        //gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
     }
     /// <summary>
     /// Returns the value of the History propierty
@@ -57,13 +70,27 @@ public class Player : Character
             return;
         CurrentLevel++;
         isLevelUp = false;
+        NextLevelXP = GetNextLevelXP();
+    }
+    /// <summary>
+    /// Calculate the XP needed to level up
+    /// </summary>
+    /// <returns></returns>
+    private int GetNextLevelXP()
+    {
+        return 100 * (int)System.Math.Exp(CurrentLevel);
+    }
+    public override void SetWeapon(Weapon weapon, bool startWeapon = false)
+    {
+        if (weapon.Type == this.WeaponKind)
+            base.SetWeapon(weapon, startWeapon);
     }
     /// <summary>
     /// Sets the initial status of a new Character.
     /// </summary>
     /// <param name="Name">Name displayed on the status screen.</param>
     /// <param name="Story">Story displayed on the status screen.</param>
-    public void SetIdentiry(string Name, string Story)
+    public void SetIdentity(string Name, string Story)
     {
         PlayerName = Name;
         History = Story;

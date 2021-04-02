@@ -16,6 +16,9 @@ public class Enemy : Character
     public Character Target;
     // Dead related
     public EnemyDead OnDeath;
+    [SerializeField]
+    [Min(0)]
+    protected int BaseXP;
 
     protected override void Start()
     {
@@ -53,9 +56,8 @@ public class Enemy : Character
 
     protected override void Death()
     {
-        gameObject.layer = 9;
         base.Death();
-        //gameObject.layer = 9;
+        gameObject.layer = 9;
     }
 
     protected override void OnWeaponAttackHit(Collider2D collider)

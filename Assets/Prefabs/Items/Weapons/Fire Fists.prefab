@@ -49,6 +49,8 @@ MonoBehaviour:
   Name: Fire Fists
   Description: your hands covered in a damaging fire
   Value: 10
+  Rank: 1
+  Kind: 0
   EffectValue: 5
   Effect: 1
   EffectDuration: 5

@@ -4,8 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public delegate void AttackHit(Collider2D collider);
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class Weapon : Item
 {
+    [SerializeField]
+    private WeaponKind Kind;
+    public WeaponKind Type { get => Kind; }
     /// <summary>
     /// Value applied by the Item's effect.
     /// </summary>
@@ -55,6 +60,8 @@ public class Weapon : Item
 
         if (Controller == null)
             Controller = GetComponent<WeaponController>();
+
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
     }
     private void Start()
     {
@@ -87,11 +94,11 @@ public class Weapon : Item
         return EffectDuration;
     }
     /// <summary>
-    /// 
+    /// Starts the attack and enables the weapon hitbox
     /// </summary>
-    /// <param name="time"></param>
-    /// <param name="origin"></param>
-    /// <param name="isLeft"></param>
+    /// <param name="time">Duration of the attack</param>
+    /// <param name="origin">Start point for an atack</param>
+    /// <param name="isLeft">Is the character looking to the left of the screen</param>
     public virtual void Attack(float time, Vector2 origin, bool isLeft)
     {
         HitBox.enabled = true;
@@ -105,7 +112,7 @@ public class Weapon : Item
             );
     }
     /// <summary>
-    /// 
+    /// Starts the attack and enables the weapon hitbox
     /// </summary>
     /// <param name="time"></param>
     /// <param name="origin"></param>
@@ -124,7 +131,7 @@ public class Weapon : Item
             );
     }
     /// <summary>
-    /// 
+    /// Disables the weapon hitbox
     /// </summary>
     protected void attackEnd()
     {
@@ -139,5 +146,16 @@ public class Weapon : Item
             OnAttackHit?.Invoke(collider);
         }
 
+    }
+    /// <summary>
+    /// Defines the weapon
+    /// </summary>
+    public enum WeaponKind
+    {
+        Fist,
+        Sword,
+        Axe,
+        Spear,
+        Slime
     }
 }

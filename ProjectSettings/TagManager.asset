@@ -8,6 +8,8 @@ TagManager:
   - Border
   - DeadFall
   - Enemy
+  - Moving Platform
+  - Platform
   layers:
   - Default
   - TransparentFX

@@ -10,7 +10,7 @@ public class LevelController : MonoBehaviour
         JumpSound,
         RunSound;
     [SerializeField]
-    private GameObject EnemyHealthBarPrefab;
+    private GameObject GameoverScreen;
 
     private AudioSource audioSource;
 
@@ -29,13 +29,16 @@ public class LevelController : MonoBehaviour
         mainCameraController = Camera.main.GetComponent<CameraController>();
         audioSource = GetComponent<AudioSource>();
         Player = GameObject.FindObjectOfType<Player>();
+        if (!GameObject.Find("SceneManager"))
+        {
+            GameObject SceneManager = Instantiate(new GameObject(), null);
+            SceneManager.name = "SceneManager";
+            SceneManager.AddComponent<LoadingManager>();
+        }
     }
     // Start is called before the first frame update
     void Start()
     {
-        Screen.orientation = ScreenOrientation.LandscapeLeft;
-        Screen.autorotateToLandscapeLeft = true;
-
         Player.SetWalkSound(
             sound: WalkSound);
         Player.SetJumpSound(
@@ -52,11 +55,8 @@ public class LevelController : MonoBehaviour
         {
             enemy.GetComponent<Enemy>().OnDeath += OnEnemyDeath;
         }
-
-        PauseMenuController.isPaused = true;
-        GameObject.Find("Player_GUI")
-            .GetComponent<PauseMenuController>()
-            .Pause_Resume();
+        if (Time.timeScale == 0)
+            Resume();
     }
 
     private void OnEnemyDeath(Enemy enemy)
@@ -68,15 +68,26 @@ public class LevelController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!Player)
+            return;
         if (!Player.HasHealth)
         {
             mainCameraController.CanMove(false);
-
         }
 
         if (Player.IsDead)
-            GameObject.Find("GameOver_Container")
-                .SetActive(true);
+            GameoverScreen.SetActive(true);
+    }
+
+    public static void Pause()
+    {
+        Time.timeScale = 0;
+        AudioListener.pause = true;
+    }
+    public static void Resume()
+    {
+        Time.timeScale = 1;
+        AudioListener.pause = false;
     }
 
     public Weapon GetInitialWeapon() => initialWeapon;

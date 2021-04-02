@@ -24,6 +24,7 @@ public abstract class WeaponController : MonoBehaviour
     public virtual void Ready(Vector2 position)
     {
         transform.position = position;
+        transform.rotation = Quaternion.identity;
     }
     protected Vector2 AngleToVector2(float angle)
     {

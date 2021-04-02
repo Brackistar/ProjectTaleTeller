@@ -49,6 +49,8 @@ MonoBehaviour:
   Name: Venom Fists
   Description: your hands are covred in a lethal poison only you can endure
   Value: 10
+  Rank: 1
+  Kind: 0
   EffectValue: 5
   Effect: 2
   EffectDuration: 5

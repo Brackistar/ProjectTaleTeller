@@ -49,6 +49,8 @@ MonoBehaviour:
   Name: Ice Fists
   Description: a misterious light covers your fists, turning them as cold as ice
   Value: 10
+  Rank: 1
+  Kind: 0
   EffectValue: 5
   Effect: 3
   EffectDuration: 5

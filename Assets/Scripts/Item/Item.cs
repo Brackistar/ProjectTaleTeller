@@ -15,6 +15,10 @@ public abstract class Item : MonoBehaviour
     [SerializeField]
     [Range(0f, 100f)]
     protected float Value;
+    [SerializeField]
+    [Range(0, 5)]
+    private int Rank = 0;
+    public int Quality { get => Rank; }
 
     public string ItemDescription
     {

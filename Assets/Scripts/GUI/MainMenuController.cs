@@ -30,12 +30,15 @@ public class MainMenuController : MonoBehaviour
     {
         Debug.Log(
             message: "Exiting game.");
-        Application.Quit();
+        Application.Quit(0);
     }
 
     public void NewGame()
     {
-        SceneManager.LoadScene(
-            sceneName: NewGameScene);
+        //SceneManager.LoadScene(
+        //    sceneName: NewGameScene);
+        GameObject.Find("SceneManager")
+            .GetComponent<LoadingManager>()
+            .LoadSceneAsync(NewGameScene);
     }
 }

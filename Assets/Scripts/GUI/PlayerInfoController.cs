@@ -12,20 +12,19 @@ public class PlayerInfoController : MonoBehaviour
     private float ChangeTime;
     private Slider HealthBar;
     private TextMeshProUGUI HealthBarText;
+
+    Image XPBar;
     private void Awake()
     {
         if (HealthBar == null)
             HealthBar = GetComponentsInChildren<Slider>()
                 .FirstOrDefault(slider => slider.name == "Health_Bar");
-
-        //if (HealthBarText == null)
-        //{
-        //    TextMeshProUGUI[] textMesh = GetComponentsInChildren<TextMeshProUGUI>();
-
-        //    HealthBarText = textMesh.FirstOrDefault(text => text.name == "Indicator");
-        //}
-        HealthBarText = GetComponentsInChildren<TextMeshProUGUI>()
-            .FirstOrDefault(text => text.name == "Indicator");
+        if (!XPBar)
+            XPBar = GetComponentsInChildren<Image>()
+                .FirstOrDefault(_ => _.name == "XP_Bar");
+        if (!HealthBarText)
+            HealthBarText = GetComponentsInChildren<TextMeshProUGUI>()
+                .FirstOrDefault(text => text.name == "Indicator");
 
         if (ChangeTime <= 0)
             ChangeTime = 1;
@@ -41,16 +40,18 @@ public class PlayerInfoController : MonoBehaviour
         SetMaxHealth();
         SetCurrentHealth();
         SetHealtBarText();
+
+        ChangeXPBar();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
         SetMaxHealth();
         SetCurrentHealth();
         SetHealtBarText();
+
+        ChangeXPBar();
     }
     /// <summary>
     /// If the current health bar value or max value is different from the values on the text showed, changes the text value
@@ -116,5 +117,14 @@ public class PlayerInfoController : MonoBehaviour
             SetHealtBarText();
             yield return null;
         }
+    }
+    private void ChangeXPBar()
+    {
+        int MaxXP = LevelController.Player.NextLevelXP,
+            CurrentXP = LevelController.Player.XP,
+            CurrentPercent = CurrentXP / MaxXP;
+
+        if (XPBar.fillAmount != CurrentPercent)
+            XPBar.fillAmount = CurrentPercent;
     }
 }
