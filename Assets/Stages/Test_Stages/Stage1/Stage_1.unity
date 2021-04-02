@@ -83941,11 +83941,6 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
         type: 3}
-      propertyPath: BaseDownSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
-        type: 3}
       propertyPath: BaseFallLenght
       value: 6
       objectReference: {fileID: 0}
