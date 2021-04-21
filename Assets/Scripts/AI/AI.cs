@@ -6,19 +6,30 @@ using UnityEngine;
 
 public abstract class AI : MonoBehaviour
 {
-    protected Enemy Enemy;
+    protected Enemy Self;
     protected bool isWalking;
     protected bool isTargetSpoted;
     [SerializeField]
     [Range(0.1f, 5)]
-    protected float DetectionRange;
-    
+    protected float DetectionRange = 1;
+    [SerializeField]
+    [Range(0.1f, 5)]
+    protected float Visibility = 2;
+    [SerializeField]
+    [Range(1, 6)]
+    protected float Aggresion = 3;
+    [SerializeField]
+    [Range(1, 6)]
+    protected float Defense = 3;
+    protected float maxJumpHeight;
+    protected bool changeWalkDirection = false;
+
     public AIState currentState { get; protected set; }
 
     protected virtual void Awake()
     {
-        if (Enemy == null)
-            Enemy = GetComponent<Enemy>();
+        if (Self == null)
+            Self = GetComponent<Enemy>();
 
         isWalking = false;
         isTargetSpoted = false;
@@ -28,77 +39,207 @@ public abstract class AI : MonoBehaviour
     protected virtual void Start()
     {
         StartCoroutine(StartBehaviour());
+        maxJumpHeight = Self.CalculateMaxJumpHeight();
     }
 
     protected virtual void Update()
     {
-        Vector2 direction,
-            topRay,
-            middleRay,
-            bottomRay;
+        RaycastHit2D ray1,
+                ray2,
+                ray3;
 
-        float topPosition,
-            middlePosition,
-            bottomPosition,
-            sidePosition;
+        PolygonCollider2D bodyCollider = GetComponent<PolygonCollider2D>();
+        CircleCollider2D feetCollider = transform.Find("Feet")
+                .GetComponent<CircleCollider2D>();
+        int layerMask;
+        float side,
+            back,
+            top = transform.TransformPoint(
+                position: bodyCollider.points
+                    .OrderByDescending(_ => _.y)
+                    .FirstOrDefault()).y,
+            bottom = transform.TransformPoint(
+                position: bodyCollider.points
+                    .OrderBy(_ => _.y)
+                    .FirstOrDefault()).y - feetCollider.radius + 0.1f;
 
-        RaycastHit2D topHit,
-            middleHit,
-            bottomHit;
+        Vector2 direction;
 
-
-
-        PolygonCollider2D collider = GetComponents<PolygonCollider2D>()
-            .FirstOrDefault(_ => _.enabled);
-
-        topPosition = collider.points.Max(_ => _.y);
-        bottomPosition = collider.points.Min(_ => _.y);
-        middlePosition = topPosition - ((topPosition - bottomPosition) / 2);
-
-        if (Enemy.MovingLeft)
+        if (Self.MovingLeft)
         {
-            sidePosition = collider.points.Min(_ => _.x);
+            side = transform.TransformPoint(
+                position: bodyCollider.points
+                    .OrderBy(_ => _.x)
+                    .FirstOrDefault()).x;
+            back = transform.TransformPoint(
+                position: bodyCollider.points
+                    .OrderByDescending(_ => _.x)
+                    .FirstOrDefault()).x;
             direction = Vector2.left;
         }
         else
         {
-            sidePosition = collider.points.Max(_ => _.x);
+            side = transform.TransformPoint(
+                position: bodyCollider.points
+                    .OrderByDescending(_ => _.x)
+                    .FirstOrDefault()).x;
+            back = transform.TransformPoint(
+                position: bodyCollider.points
+                    .OrderBy(_ => _.x)
+                    .FirstOrDefault()).x;
             direction = Vector2.right;
         }
 
-        topRay = new Vector2(x: sidePosition, y: topPosition);
-        middleRay = new Vector2(x: sidePosition, y: middlePosition);
-        bottomRay = new Vector2(x: sidePosition, y: bottomPosition);
+        // Detect if an enemy is in detection range
+        layerMask = 1 << 8;
+        ray1 = Physics2D.Raycast(
+            origin: new Vector2(
+                x: back,
+                y: bottom),
+            direction: -direction,
+            distance: DetectionRange,
+            layerMask: layerMask);
+        ray2 = Physics2D.Raycast(
+            origin: new Vector2(
+                x: back,
+                y: (top - bottom) * 0.5f),
+            direction: -direction,
+            distance: DetectionRange,
+            layerMask: layerMask);
+        ray3 = Physics2D.Raycast(
+            origin: new Vector2(
+                x: back,
+                y: top),
+            direction: -direction,
+            distance: DetectionRange,
+            layerMask: layerMask);
 
-        // Actions at 1m sight
-        topHit = Physics2D.Raycast(
-            origin: topRay,
-            direction: direction,
-            distance: 1f);
-        middleHit = Physics2D.Raycast(
-            origin: middleRay,
-            direction: direction,
-            distance: 1f);
-        bottomHit = Physics2D.Raycast(
-            origin: bottomRay,
-            direction: direction,
-            distance: 1f);
-
-        if (topHit || middleHit || bottomHit)
+        if ((ray1 || ray2 || ray3) && !isTargetSpoted)
         {
-            try
-            {
-                bool isGround = topHit.transform.CompareTag("Ground") ||
-                    middleHit.transform.CompareTag("Ground") ||
-                    bottomHit.transform.CompareTag("Ground");
-                if (isGround && isWalking)
-                {
-                    Enemy.Jump();
-                }
-            }
-            catch (NullReferenceException)
-            {
+            currentState = AIState.EnemySpoted;
+        }
+        else if ((!ray1 && !ray2 && !ray3) && isTargetSpoted)
+        {
+            currentState = AIState.EnemyOutOfSight;
+        }
 
+        // Debug section
+        Debug.DrawLine(
+            start: new Vector2(back, bottom),
+            end: new Vector2(back, bottom) + (-direction * DetectionRange),
+            color: Color.yellow);
+        Debug.DrawLine(
+            start: new Vector2(back, (top - bottom) * 0.5f),
+            end: new Vector2(back, (top - bottom) * 0.5f) + (-direction * DetectionRange),
+            color: Color.yellow);
+        Debug.DrawLine(
+            start: new Vector2(back, top),
+            end: new Vector2(back, top) + (-direction * DetectionRange),
+            color: Color.yellow);
+        // Debug end
+
+        // Detect if an enemy is visible
+        ray1 = Physics2D.Raycast(
+            origin: new Vector2(
+                x: side,
+                y: top),
+            direction: LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * -direction,
+            distance: Visibility,
+            layerMask: layerMask);
+        ray2 = Physics2D.Raycast(
+            origin: new Vector2(
+                x: side,
+                y: top),
+            direction: direction,
+            distance: Visibility,
+            layerMask: layerMask);
+        ray3 = Physics2D.Raycast(
+            origin: new Vector2(
+                x: side,
+                y: top),
+            direction: LevelController.AngleToVector2(Self.FieldOfVision * 0.5f) * direction,
+            distance: Visibility,
+            layerMask: layerMask);
+
+        if ((ray1 || ray2 || ray3) && !isTargetSpoted)
+        {
+            currentState = AIState.EnemySpoted;
+        }
+        else if ((!ray1 && !ray2 && !ray3) && isTargetSpoted)
+        {
+            currentState = AIState.EnemyOutOfSight;
+        }
+
+
+        // Debug section
+        Debug.DrawLine(
+            start: new Vector2(side, top),
+            end: new Vector2(side, top) + (LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * direction * DetectionRange),
+            color: Color.yellow);
+        Debug.DrawLine(
+            start: new Vector2(side, top),
+            end: new Vector2(side, top) + (direction * DetectionRange),
+            color: Color.yellow);
+        Debug.DrawLine(
+            start: new Vector2(side, top),
+            end: new Vector2(side, top) + (LevelController.AngleToVector2(Self.FieldOfVision * 0.5f) * direction * DetectionRange),
+            color: Color.yellow);
+        // Debug end
+
+        // Detect if before is a jumpable object and jumps over it
+        if (isWalking)
+        {
+            maxJumpHeight = Self.CalculateMaxJumpHeight();
+            layerMask = 1 << 10;
+            int distance = 2;
+
+            ray1 = Physics2D.Raycast(
+                origin: new Vector2(
+                    x: side,
+                    y: bottom),
+                direction: direction,
+                distance: distance,
+                layerMask: layerMask);
+            ray2 = Physics2D.Raycast(
+                origin: new Vector2(
+                    x: side,
+                    y: bottom + 0.4f),
+                direction: direction,
+                distance: distance,
+                layerMask: layerMask);
+            ray3 = Physics2D.Raycast(
+                origin: new Vector2(
+                    x: side,
+                    y: maxJumpHeight - 0.1f),
+                direction: direction,
+                distance: distance,
+                layerMask: layerMask);
+
+            // Debug section
+            Debug.DrawLine(
+                start: new Vector2(side, bottom),
+                end: new Vector2(side, bottom) + (direction * distance),
+                color: Color.green);
+            Debug.DrawLine(
+                start: new Vector2(side, bottom + 0.4f),
+                end: new Vector2(side, bottom + 0.4f) + (direction * distance),
+                color: Color.green);
+            Debug.DrawLine(
+                start: new Vector2(side, maxJumpHeight - 0.1f),
+                end: new Vector2(side, maxJumpHeight - 0.1f) + (direction * distance),
+                color: Color.green);
+            // Debug end
+
+            if (ray1 && ray2)
+            {
+                if (ray2.distance <= ray1.distance && !ray3)
+                {
+                    Self.Jump();
+                }
+                else
+                {
+                    changeWalkDirection = true;
+                }
             }
         }
     }
@@ -107,6 +248,8 @@ public abstract class AI : MonoBehaviour
     {
         while (enabled)
         {
+            Debug.Log(
+                message: name + " current status \'" + currentState.ToString() + "\'");
             switch (currentState)
             {
                 case AIState.Combat:
@@ -158,10 +301,26 @@ public abstract class AI : MonoBehaviour
     protected virtual void EnemySpoted()
     {
         isTargetSpoted = true;
+
+        Self.AlertStatus(
+            state: currentState);
+
+        float targetXPosition = Self.Target.transform.position.x,
+            selfXPosition = Self.transform.position.x;
+
+        if (Self.MovingLeft && targetXPosition > selfXPosition)
+        {
+            Self.FlipX(false);
+        }
+        else if (!Self.MovingLeft && targetXPosition < selfXPosition)
+        {
+            Self.FlipX(true);
+        }
     }
     protected virtual void EnemyOutOfSight()
     {
         isTargetSpoted = false;
+        currentState = AIState.Idle;
     }
 }
 public enum AIState

@@ -15,7 +15,7 @@ public class LinearAttack : WeaponController
 
         while (elapsedTime < time)
         {
-            Vector2 target = origin + AngleToVector2(angle, magnitude);
+            Vector2 target = origin + LevelController.AngleToVector2(angle, magnitude);
 
             if (isLeft)
                 target.x *= -1;

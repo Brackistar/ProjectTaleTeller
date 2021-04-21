@@ -237,9 +237,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BaseSpeed: 1
-  BaseJump: 1
-  JumpMultiplier: 300
+  BaseDownSpeed: 3
+  BaseJump: 7
   BaseHealth: 100
+  DeadFallDistance: 10
+  BaseFallDamage: 0
+  BaseFallLenght: 3
   Agility: 1
   Strength: 1
   Resistance: 1
@@ -263,9 +266,11 @@ MonoBehaviour:
   armor: {fileID: 2356681295603157073, guid: cc9a6ca6ad23f3c4face837b3b58df22, type: 3}
   shield: {fileID: 8529272316823560920, guid: 42cd598f0deb37249a589ff41c78d4da, type: 3}
   CurrentLevel: 1
-  CurrentXP: 0
   HealthBarPrefab: {fileID: 7950488064869414133, guid: aef86c2bab19aed4d82509ac6c84f9b2,
     type: 3}
+  EnemySpotedAlert: {fileID: -8849701339627601781, guid: 24cd7c43fa9ce5c49847e5ef7f0916fc,
+    type: 3}
+  VisionFieldLength: 0
   FieldOfVision: 2
   Target: {fileID: 0}
   BaseXP: 100
@@ -282,7 +287,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DetectionRange: 1
-  Distance: 2
+  Visibility: 5
+  Aggresion: 3
+  Defense: 3
+  Distance: 3
   AttentionSpan: 0.2
   patrolSpeed: 1
 --- !u!60 &1853528681276831594

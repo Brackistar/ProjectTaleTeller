@@ -35,6 +35,7 @@ public class Weapon : Item
     [SerializeField]
     [Range(0, 5)]
     protected float Range;
+    public float ARange { get => Range; }
     [SerializeField]
     [Range(0, 180)]
     protected float AttackAngle;
@@ -53,18 +54,28 @@ public class Weapon : Item
 
     private void Awake()
     {
-        if (HitBox == null)
-            HitBox = GetComponent<Collider2D>();
-        HitBox.enabled = false;
-        HitBox.isTrigger = true;
+        //if (this.HitBox == null)
+        //    this.HitBox = GetComponent<Collider2D>();
+        //HitBox.enabled = false;
+        //HitBox.isTrigger = true;
+
+        //if (Controller == null)
+        //    Controller = GetComponent<WeaponController>();
+
+        //GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+    }
+    private void Start()
+    {
+        if (this.HitBox == null)
+            this.HitBox = GetComponent<Collider2D>();
+        this.HitBox.enabled = false;
+        this.HitBox.isTrigger = true;
 
         if (Controller == null)
             Controller = GetComponent<WeaponController>();
 
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
-    }
-    private void Start()
-    {
+
         Controller.SetHitbox(
             collider: HitBox);
         Controller.OnAttackEnd += attackEnd;

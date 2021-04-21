@@ -265,12 +265,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseSpeed: 0.5
   BaseDownSpeed: 3
-  BaseJump: 1
-  JumpMultiplier: 300
+  BaseJump: 7
   BaseHealth: 100
-  DeadFallDistance: 0
+  DeadFallDistance: 10
   BaseFallDamage: 5
-  BaseFallLenght: 1
+  BaseFallLenght: 6
   Agility: 1
   Strength: 1
   Resistance: 1
@@ -326,13 +325,13 @@ MonoBehaviour:
     - {x: -0.8205668, y: -0.7924134}
     - {x: -0.7248566, y: -0.9162253}
     - {x: -0.5179339, y: -0.9093115}
-  weapon: {fileID: 0}
-  armor: {fileID: 0}
-  shield: {fileID: 0}
+  weapon: {fileID: 7793152878588932575, guid: 1509e9807ec5d7a4b95ba0f16abcbd8b, type: 3}
+  armor: {fileID: 2356681295603157073, guid: cc9a6ca6ad23f3c4face837b3b58df22, type: 3}
+  shield: {fileID: 8529272316823560920, guid: 42cd598f0deb37249a589ff41c78d4da, type: 3}
   CurrentLevel: 1
   PlayerName: TestPlayer
   History: Test Player
-  WeaponKind: 1
+  AllowedWeaponKind: 1
 --- !u!50 &2437712475516836218
 Rigidbody2D:
   serializedVersion: 4

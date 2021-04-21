@@ -28,9 +28,9 @@ public class Patroller : AI
             x: currentPosition.x + Distance * 0.5f,
             y: currentPosition.y);
 
-        CircleCollider2D circleCollider = gameObject.AddComponent<CircleCollider2D>();
-        circleCollider.isTrigger = true;
-        circleCollider.radius = DetectionRange;
+        //CircleCollider2D circleCollider = gameObject.AddComponent<CircleCollider2D>();
+        //circleCollider.isTrigger = true;
+        //circleCollider.radius = DetectionRange;
 
         speed = (int)patrolSpeed;
 
@@ -39,31 +39,62 @@ public class Patroller : AI
 
     protected override void IdleAction()
     {
+        base.IdleAction();
+        isWalking = true;
+        //if (Mathf.Abs(transform.position.x - stopPosition.x) <= 0.25f)
+        //    speed = -(int)patrolSpeed;
 
-        if (Mathf.Abs(transform.position.x - stopPosition.x)<= 0.25f)
-            speed = -(int)patrolSpeed;
+        //if (Mathf.Abs(transform.position.x - startPosition.x) <= 0.25f)
+        //    speed = (int)patrolSpeed;
 
-        if (Mathf.Abs(transform.position.x - startPosition.x) <= 0.25f)
-            speed = (int)patrolSpeed;
+        if (changeWalkDirection)
+        {
+            changeWalkDirection = false;
+            if (speed == (int)patrolSpeed)
+            {
+                speed = -(int)patrolSpeed;
+            }
+            else
+            {
+                speed = (int)patrolSpeed;
+            }
+        }
+        else
+        {
+            if (Mathf.Abs(transform.position.x - stopPosition.x) <= 0.25f)
+                speed = -(int)patrolSpeed;
 
-        Enemy.Move(new Vector2(
+            if (Mathf.Abs(transform.position.x - startPosition.x) <= 0.25f)
+                speed = (int)patrolSpeed;
+        }
+
+        Debug.Log(
+            message: name + " patrol with speed: " + speed.ToString());
+
+        Self.Move(new Vector2(
                 x: speed,
                 y: 0));
-
     }
 
     protected override void EnemySpoted()
     {
-        if ((transform.position - Enemy.Target.transform.position).normalized.x < 0)
-            Enemy.FlipX(true);
+        base.EnemySpoted();
+        isWalking = false;
+        Self.Move(Vector2.zero);
+        //if ((transform.position - Self.Target.transform.position).normalized.x < 0)
+        //    Self.FlipX(true);
         currentState = AIState.Combat;
     }
 
+    protected override void CombatAction()
+    {
+        base.CombatAction();
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject != gameObject)
         {
-            if (collision.gameObject.GetComponent<Character>() == Enemy.Target)
+            if (collision.gameObject.GetComponent<Character>() == Self.Target)
             {
                 currentState = AIState.EnemySpoted;
             }

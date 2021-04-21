@@ -148,7 +148,7 @@ public class PauseMenuController : MonoBehaviour
     {
         Debug.Log(
             message: "Exiting game.");
-        Application.Quit();
+        AppHelper.Quit();
     }
 
     private void SetLastActive(string TargetName)

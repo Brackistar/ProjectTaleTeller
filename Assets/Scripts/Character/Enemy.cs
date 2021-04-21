@@ -9,10 +9,15 @@ public class Enemy : Character
     [SerializeField]
     private GameObject HealthBarPrefab;
     private EnemyHealthBar healthBar;
+    [SerializeField]
+    private EnemyStatusController EnemySpotedAlert;
     // A.I. related
     [SerializeField]
     [Range(2, 5)]
-    public float FieldOfVision;
+    public float VisionFieldLength = 2;
+    [SerializeField]
+    [Range(45, 180)]
+    public float FieldOfVision = 80;
     public Character Target;
     // Dead related
     public EnemyDead OnDeath;
@@ -36,6 +41,18 @@ public class Enemy : Character
             parent: canvas,
             worldPositionStays: false);
 
+        this.EnemySpotedAlert = Instantiate(
+            original: EnemySpotedAlert.gameObject)
+            .GetComponent<EnemyStatusController>();
+
+        EnemySpotedAlert.SetInitialData(
+            target: this,
+            canvas: canvas);
+
+        EnemySpotedAlert.gameObject.transform.SetParent(
+            parent: canvas,
+            worldPositionStays: false);
+
         CurrentXP = BaseXP * CurrentLevel;
     }
 
@@ -52,6 +69,19 @@ public class Enemy : Character
         if (HasHealth)
             return 0;
         return CurrentXP;
+    }
+
+    public void AlertStatus(AIState state)
+    {
+        Debug.Log(
+            message: name + " alert state \'" + state.ToString() + "\'");
+
+        switch (state)
+        {
+            case AIState.EnemySpoted:
+                EnemySpotedAlert.EnableAlert();
+                break;
+        }
     }
 
     protected override void Death()

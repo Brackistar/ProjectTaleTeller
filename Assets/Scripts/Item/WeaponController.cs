@@ -26,15 +26,15 @@ public abstract class WeaponController : MonoBehaviour
         transform.position = position;
         transform.rotation = Quaternion.identity;
     }
-    protected Vector2 AngleToVector2(float angle)
-    {
-        float radian = angle * Mathf.Deg2Rad;
-        return new Vector2(
-            x: Mathf.Cos(radian),
-            y: Mathf.Sin(radian));
-    }
-    protected Vector2 AngleToVector2(float angle, float magnitude)
-    {
-        return AngleToVector2(angle) * magnitude;
-    }
+    //protected Vector2 AngleToVector2(float angle)
+    //{
+    //    float radian = angle * Mathf.Deg2Rad;
+    //    return new Vector2(
+    //        x: Mathf.Cos(radian),
+    //        y: Mathf.Sin(radian));
+    //}
+    //protected Vector2 AngleToVector2(float angle, float magnitude)
+    //{
+    //    return AngleToVector2(angle) * magnitude;
+    //}
 }

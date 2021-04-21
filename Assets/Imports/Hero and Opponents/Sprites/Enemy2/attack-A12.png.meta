@@ -43,14 +43,14 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 9
+  spritePivot: {x: 0.35, y: 0.34}
   spritePixelsToUnits: 30
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 11, y: 0, z: 62, w: 36}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0.75
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -99,7 +99,60 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline: []
-    physicsShape: []
+    physicsShape:
+    - - {x: -19, y: -33}
+      - {x: -19, y: -29}
+      - {x: -17, y: -28}
+      - {x: -17, y: -48}
+      - {x: -9, y: -48}
+      - {x: -9, y: -46}
+      - {x: -11, y: -44}
+      - {x: -11, y: -35}
+      - {x: -9, y: -33}
+      - {x: -9, y: -30}
+      - {x: -12, y: -26}
+      - {x: -14, y: -22}
+      - {x: -12, y: -20}
+      - {x: -12, y: -26}
+      - {x: -8, y: -30}
+      - {x: -1, y: -30}
+      - {x: 3, y: -26}
+      - {x: 3, y: -5}
+      - {x: -1, y: -1}
+      - {x: -9, y: -1}
+      - {x: -11, y: 2}
+      - {x: -11, y: 10}
+      - {x: -14, y: 13}
+      - {x: -19, y: 13}
+      - {x: -22, y: 10}
+      - {x: -24, y: 2}
+      - {x: -28, y: -2}
+      - {x: -28, y: -5}
+      - {x: -26, y: -7}
+      - {x: -31, y: -12}
+      - {x: -31, y: -15}
+      - {x: -30, y: -17}
+      - {x: -33, y: -19}
+      - {x: -41, y: -24}
+      - {x: -44, y: -24}
+      - {x: -48, y: -26}
+      - {x: -54, y: -30}
+      - {x: -54, y: -32}
+      - {x: -51, y: -35}
+      - {x: -47, y: -36}
+      - {x: -39, y: -31}
+      - {x: -38, y: -29}
+      - {x: -31, y: -26}
+      - {x: -27, y: -23}
+      - {x: -26, y: -23}
+      - {x: -27, y: -32}
+      - {x: -28, y: -39}
+      - {x: -29, y: -45}
+      - {x: -29, y: -48}
+      - {x: -21, y: -48}
+      - {x: -21, y: -46}
+      - {x: -22, y: -39}
+      - {x: -21, y: -38}
     bones: []
     spriteID: 20d0b18786dcc074997b42f7d226cbbb
     internalID: 0

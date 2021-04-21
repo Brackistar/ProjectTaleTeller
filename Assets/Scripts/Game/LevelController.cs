@@ -93,4 +93,16 @@ public class LevelController : MonoBehaviour
     public Weapon GetInitialWeapon() => initialWeapon;
     public Armor GetInitialArmor() => initialArmor;
     public Shield GetInitialShield() => initialShield;
+
+    public static Vector2 AngleToVector2(float angle)
+    {
+        float radian = angle * Mathf.Deg2Rad;
+        return new Vector2(
+            x: Mathf.Cos(radian),
+            y: Mathf.Sin(radian));
+    }
+    public static Vector2 AngleToVector2(float angle, float magnitude)
+    {
+        return AngleToVector2(angle) * magnitude;
+    }
 }

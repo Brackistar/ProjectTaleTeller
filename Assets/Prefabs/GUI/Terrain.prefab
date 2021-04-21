@@ -437,10 +437,10 @@ PlatformEffector2D:
   m_RotationalOffset: 0
   m_UseOneWay: 1
   m_UseOneWayGrouping: 0
-  m_SurfaceArc: 170
-  m_UseSideFriction: 1
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
   m_UseSideBounce: 0
-  m_SideArc: 10
+  m_SideArc: 0
 --- !u!1 &9208950454207057257
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,7 +1227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9208950455246233175}
   - component: {fileID: 9208950455246233174}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}

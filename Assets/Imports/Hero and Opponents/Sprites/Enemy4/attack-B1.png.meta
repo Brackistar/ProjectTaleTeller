@@ -43,14 +43,14 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 9
+  spritePivot: {x: 0.34, y: 0.35}
   spritePixelsToUnits: 30
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 9, y: 0, z: 41, w: 34}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0.75
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -99,7 +99,60 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline: []
-    physicsShape: []
+    physicsShape:
+    - - {x: -18, y: -34}
+      - {x: -19, y: -31}
+      - {x: -18, y: -48}
+      - {x: -10, y: -48}
+      - {x: -10, y: -46}
+      - {x: -12, y: -44}
+      - {x: -12, y: -35}
+      - {x: -10, y: -33}
+      - {x: -10, y: -30}
+      - {x: -13, y: -27}
+      - {x: -14, y: -21}
+      - {x: -5, y: -21}
+      - {x: -4, y: -20}
+      - {x: 22, y: -20}
+      - {x: 24, y: -18}
+      - {x: 24, y: -17}
+      - {x: 21, y: -14}
+      - {x: -8, y: -14}
+      - {x: -9, y: -9}
+      - {x: -6, y: -6}
+      - {x: -6, y: -3}
+      - {x: -10, y: 1}
+      - {x: -10, y: 10}
+      - {x: -14, y: 15}
+      - {x: -18, y: 15}
+      - {x: -23, y: 10}
+      - {x: -23, y: 7}
+      - {x: -27, y: 7}
+      - {x: -31, y: 3}
+      - {x: -31, y: 1}
+      - {x: -38, y: -5}
+      - {x: -38, y: -11}
+      - {x: -40, y: -15}
+      - {x: -54, y: -15}
+      - {x: -56, y: -17}
+      - {x: -56, y: -19}
+      - {x: -54, y: -21}
+      - {x: -38, y: -21}
+      - {x: -37, y: -22}
+      - {x: -35, y: -22}
+      - {x: -28, y: -21}
+      - {x: -27, y: -22}
+      - {x: -27, y: -48}
+      - {x: -19, y: -48}
+      - {x: -19, y: -46}
+      - {x: -21, y: -44}
+      - {x: -21, y: -35}
+    - - {x: -28, y: -9}
+      - {x: -28, y: -5}
+      - {x: -28, y: -10}
+      - {x: -27, y: -12}
+      - {x: -29, y: -14}
+      - {x: -33, y: -14}
     bones: []
     spriteID: 04f4ea2e399162346b18783c29935317
     internalID: 0

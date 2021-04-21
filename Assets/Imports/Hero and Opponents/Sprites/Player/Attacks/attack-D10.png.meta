@@ -46,11 +46,11 @@ TextureImporter:
   alignment: 9
   spritePivot: {x: 0.36, y: 0.5}
   spritePixelsToUnits: 30
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 15, y: 16, z: 32, w: 30}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0.75
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -99,7 +99,67 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline: []
-    physicsShape: []
+    physicsShape:
+    - - {x: -32, y: -19}
+      - {x: -31, y: -20}
+      - {x: -25, y: -19}
+      - {x: -22, y: -22}
+      - {x: -19, y: -22}
+      - {x: -18, y: -21}
+      - {x: -18, y: -32}
+      - {x: -16, y: -34}
+      - {x: -11, y: -34}
+      - {x: -9, y: -32}
+      - {x: -9, y: -16}
+      - {x: -6, y: -19}
+      - {x: -3, y: -19}
+      - {x: 0, y: -21}
+      - {x: 2, y: -21}
+      - {x: 25, y: -33}
+      - {x: 30, y: -33}
+      - {x: 32, y: -31}
+      - {x: 31, y: -28}
+      - {x: 33, y: -25}
+      - {x: 34, y: -16}
+      - {x: 33, y: -10}
+      - {x: 32, y: -5}
+      - {x: 30, y: -3}
+      - {x: 27, y: -4}
+      - {x: 23, y: -7}
+      - {x: 23, y: -10}
+      - {x: 20, y: -15}
+      - {x: 15, y: -16}
+      - {x: 13, y: -17}
+      - {x: 13, y: -19}
+      - {x: 4, y: -14}
+      - {x: -2, y: -9}
+      - {x: -7, y: -6}
+      - {x: -5, y: -1}
+      - {x: -5, y: 9}
+      - {x: -3, y: 11}
+      - {x: -3, y: 14}
+      - {x: -6, y: 17}
+      - {x: -10, y: 18}
+      - {x: -12, y: 20}
+      - {x: -13, y: 20}
+      - {x: -17, y: 16}
+      - {x: -21, y: 10}
+      - {x: -24, y: 7}
+      - {x: -26, y: 4}
+      - {x: -26, y: 0}
+      - {x: -31, y: -6}
+      - {x: -33, y: -8}
+      - {x: -37, y: -10}
+      - {x: -43, y: -17}
+      - {x: -47, y: -21}
+      - {x: -50, y: -26}
+      - {x: -51, y: -29}
+      - {x: -51, y: -32}
+      - {x: -49, y: -34}
+      - {x: -46, y: -34}
+      - {x: -42, y: -31}
+      - {x: -39, y: -25}
+      - {x: -38, y: -25}
     bones: []
     spriteID: c7654999334c86a4dabb1bc099753041
     internalID: 0

@@ -46,11 +46,11 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 30
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 3, y: 0, z: 47, w: 35}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0.75
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -99,7 +99,64 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline: []
-    physicsShape: []
+    physicsShape:
+    - - {x: -18, y: -34}
+      - {x: -18, y: -48}
+      - {x: -10, y: -48}
+      - {x: -10, y: -46}
+      - {x: -12, y: -44}
+      - {x: -12, y: -35}
+      - {x: -10, y: -33}
+      - {x: -10, y: -30}
+      - {x: -13, y: -27}
+      - {x: -11, y: -20}
+      - {x: -10, y: -19}
+      - {x: 16, y: -19}
+      - {x: 18, y: -17}
+      - {x: 18, y: -16}
+      - {x: 15, y: -13}
+      - {x: -11, y: -13}
+      - {x: -8, y: -8}
+      - {x: -8, y: -5}
+      - {x: -11, y: -1}
+      - {x: -10, y: 2}
+      - {x: -10, y: 9}
+      - {x: -14, y: 14}
+      - {x: -18, y: 14}
+      - {x: -23, y: 9}
+      - {x: -23, y: 5}
+      - {x: -27, y: 5}
+      - {x: -31, y: 1}
+      - {x: -31, y: -2}
+      - {x: -33, y: -4}
+      - {x: -36, y: -4}
+      - {x: -39, y: -7}
+      - {x: -41, y: -11}
+      - {x: -45, y: -14}
+      - {x: -60, y: -14}
+      - {x: -62, y: -16}
+      - {x: -62, y: -18}
+      - {x: -60, y: -20}
+      - {x: -44, y: -20}
+      - {x: -43, y: -21}
+      - {x: -41, y: -21}
+      - {x: -40, y: -20}
+      - {x: -28, y: -24}
+      - {x: -26, y: -26}
+      - {x: -27, y: -33}
+      - {x: -28, y: -39}
+      - {x: -29, y: -48}
+      - {x: -21, y: -48}
+      - {x: -21, y: -46}
+      - {x: -22, y: -39}
+      - {x: -21, y: -38}
+    - - {x: -33, y: -14}
+      - {x: -29, y: -10}
+      - {x: -29, y: -8}
+      - {x: -29, y: -10}
+      - {x: -28, y: -12}
+      - {x: -29, y: -13}
+      - {x: -35, y: -14}
     bones: []
     spriteID: c139444fb177a3d4dace77530f638c2a
     internalID: 0

@@ -46,11 +46,11 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 30
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 40, y: 0, z: 35, w: 39}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0.75
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -99,7 +99,72 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline: []
-    physicsShape: []
+    physicsShape:
+    - - {x: -7, y: -48}
+      - {x: 3, y: -48}
+      - {x: 3, y: -47}
+      - {x: 1, y: -45}
+      - {x: 1, y: -31}
+      - {x: -2, y: -26}
+      - {x: -2, y: -23}
+      - {x: 0, y: -28}
+      - {x: 3, y: -32}
+      - {x: 7, y: -32}
+      - {x: 13, y: -28}
+      - {x: 16, y: -21}
+      - {x: 16, y: -17}
+      - {x: 19, y: -13}
+      - {x: 26, y: -13}
+      - {x: 28, y: -11}
+      - {x: 27, y: -8}
+      - {x: 18, y: -6}
+      - {x: 16, y: -4}
+      - {x: 16, y: 0}
+      - {x: 15, y: 3}
+      - {x: 11, y: 8}
+      - {x: 8, y: 9}
+      - {x: 3, y: 9}
+      - {x: 0, y: 5}
+      - {x: -4, y: 7}
+      - {x: -7, y: 7}
+      - {x: -11, y: 3}
+      - {x: -15, y: 3}
+      - {x: -19, y: -1}
+      - {x: -19, y: -3}
+      - {x: -17, y: -5}
+      - {x: -20, y: -8}
+      - {x: -21, y: -14}
+      - {x: -19, y: -18}
+      - {x: -17, y: -19}
+      - {x: -17, y: -25}
+      - {x: -19, y: -29}
+      - {x: -21, y: -34}
+      - {x: -22, y: -37}
+      - {x: -24, y: -45}
+      - {x: -26, y: -47}
+      - {x: -26, y: -48}
+      - {x: -18, y: -48}
+      - {x: -17, y: -47}
+      - {x: -15, y: -43}
+      - {x: -10, y: -45}
+    - - {x: 1, y: -16}
+      - {x: 1, y: -15}
+      - {x: 8, y: -16}
+      - {x: 10, y: -16}
+      - {x: 8, y: -22}
+      - {x: 6, y: -25}
+    - - {x: 5, y: -5}
+      - {x: 3, y: -3}
+      - {x: 2, y: -3}
+      - {x: 5, y: 2}
+      - {x: 7, y: 2}
+      - {x: 8, y: 1}
+      - {x: 9, y: -2}
+      - {x: 10, y: -3}
+      - {x: 10, y: -6}
+      - {x: 11, y: -7}
+      - {x: 8, y: -6}
+      - {x: 7, y: -5}
     bones: []
     spriteID: 608127035939fe04ebea266c835473d2
     internalID: 0

@@ -128,16 +128,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1031996884}
     m_Modifications:
-    - target: {fileID: 621628522841982320, guid: 149f4a39e13ac5a45be27ddd66ca9246,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.newSize.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 621628522841982320, guid: 149f4a39e13ac5a45be27ddd66ca9246,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.adaptiveTiling
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 621628522841982321, guid: 149f4a39e13ac5a45be27ddd66ca9246,
         type: 3}
       propertyPath: m_Size.x
@@ -213,6 +203,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Down Elevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 621628522841982327, guid: 149f4a39e13ac5a45be27ddd66ca9246,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3758138485252619875, guid: 149f4a39e13ac5a45be27ddd66ca9246,
         type: 3}
@@ -494,31 +489,6 @@ PrefabInstance:
       propertyPath: Target
       value: 
       objectReference: {fileID: 1507336743}
-    - target: {fileID: 1853528681276831597, guid: 786f6c1e981db15428273c7107910379,
-        type: 3}
-      propertyPath: BaseFallDamage
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1853528681276831597, guid: 786f6c1e981db15428273c7107910379,
-        type: 3}
-      propertyPath: BaseFallLenght
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1853528681276831597, guid: 786f6c1e981db15428273c7107910379,
-        type: 3}
-      propertyPath: DeadFallDistance
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5775947346475930462, guid: 786f6c1e981db15428273c7107910379,
-        type: 3}
-      propertyPath: Distance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5775947346475930462, guid: 786f6c1e981db15428273c7107910379,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6703111737023085502, guid: 786f6c1e981db15428273c7107910379,
         type: 3}
       propertyPath: m_Layer
@@ -1874,6 +1844,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[0].Array.data[7].Y
       value: -69999900
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208950453700973434, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9208950454047905240, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
@@ -7464,6 +7439,11 @@ PrefabInstance:
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[12].Y
       value: 78124900
       objectReference: {fileID: 0}
+    - target: {fileID: 9208950454102268904, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9208950454102268907, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
       propertyPath: m_Size.y
@@ -12968,6 +12948,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Tiles.Array.data[86].second.m_TileObjectToInstantiateIndex
       value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208950454207057257, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9208950454405769114, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
@@ -23812,15 +23797,15 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[353].second.m_TileObjectToInstantiateIndex
       value: 65535
       objectReference: {fileID: 0}
+    - target: {fileID: 9208950454405769116, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9208950454405769118, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
       propertyPath: m_EdgeRadius
       value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 9208950454405769118, guid: a58fe812ae1b4a34aae552328c304763,
-        type: 3}
-      propertyPath: m_GeometryType
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9208950454405769118, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
@@ -26691,6 +26676,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[19].Y
       value: -90000000
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208950454767411777, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9208950454767411788, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
@@ -57591,6 +57581,11 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[122].second.m_TileObjectToInstantiateIndex
       value: 65535
       objectReference: {fileID: 0}
+    - target: {fileID: 9208950455018374686, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9208950455246233173, guid: a58fe812ae1b4a34aae552328c304763,
         type: 3}
       propertyPath: m_Name
@@ -83306,6 +83301,11 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[963].second.m_TileObjectToInstantiateIndex
       value: 65535
       objectReference: {fileID: 0}
+    - target: {fileID: 9208950455571047902, guid: a58fe812ae1b4a34aae552328c304763,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a58fe812ae1b4a34aae552328c304763, type: 3}
 --- !u!4 &1031996884 stripped
@@ -83923,31 +83923,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
         type: 3}
-      propertyPath: armor
-      value: 
-      objectReference: {fileID: 2356681295603157073, guid: cc9a6ca6ad23f3c4face837b3b58df22,
-        type: 3}
-    - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
-        type: 3}
-      propertyPath: shield
-      value: 
-      objectReference: {fileID: 8529272316823560920, guid: 42cd598f0deb37249a589ff41c78d4da,
-        type: 3}
-    - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
-        type: 3}
-      propertyPath: weapon
+      propertyPath: Weapon
       value: 
       objectReference: {fileID: 7793152878588932575, guid: 1509e9807ec5d7a4b95ba0f16abcbd8b,
         type: 3}
     - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
         type: 3}
-      propertyPath: BaseFallLenght
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 2437712475516836217, guid: bba950f453b04b24dbe2d8acd184c318,
-        type: 3}
-      propertyPath: DeadFallDistance
-      value: 10
+      propertyPath: JumpMultiplier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2437712475516836223, guid: bba950f453b04b24dbe2d8acd184c318,
         type: 3}
@@ -84138,6 +84121,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Up Elevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 621628522841982327, guid: 149f4a39e13ac5a45be27ddd66ca9246,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3758138485252619875, guid: 149f4a39e13ac5a45be27ddd66ca9246,
         type: 3}

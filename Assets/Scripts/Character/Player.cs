@@ -13,7 +13,7 @@ public class Player : Character
     private string History;
     [Header("Inventory")]
     [SerializeField]
-    private Weapon.WeaponKind WeaponKind;
+    private Weapon.WeaponKind AllowedWeaponKind;
     public int NextLevelXP { get; private set; }
     public bool isLevelUp { get; private set; }
 
@@ -36,6 +36,10 @@ public class Player : Character
 
         //gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         //gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
+        if (Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            CalculateMaxJumpHeight();
+        }
     }
     /// <summary>
     /// Returns the value of the History propierty
@@ -78,12 +82,22 @@ public class Player : Character
     /// <returns></returns>
     private int GetNextLevelXP()
     {
-        return 100 * (int)System.Math.Exp(CurrentLevel);
+        return 100 * (int)System.Math.Pow(10, CurrentLevel);
     }
     public override void SetWeapon(Weapon weapon, bool startWeapon = false)
     {
-        if (weapon.Type == this.WeaponKind)
+        if (weapon.Type == this.AllowedWeaponKind)
+        {
             base.SetWeapon(weapon, startWeapon);
+        }
+        else
+        {
+            base.SetWeapon(
+                weapon: GameObject.Find("LevelController")
+                    .GetComponent<LevelController>()
+                    .GetInitialWeapon(),
+                startWeapon: startWeapon);
+        }
     }
     /// <summary>
     /// Sets the initial status of a new Character.
@@ -108,11 +122,11 @@ public class Player : Character
             {
                 bool enemyKilled = enemy.ReceiveAttack(
                     value: GetDamage());
-                if (Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
+                if (this.Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
                     enemy.AddEffect(
-                        effect: Weapon.GetEffectName(),
-                        intensity: Weapon.GetEffectValue(),
-                        duration: Weapon.GetEffectDuration());
+                        effect: this.Weapon.GetEffectName(),
+                        intensity: this.Weapon.GetEffectValue(),
+                        duration: this.Weapon.GetEffectDuration());
             }
         }
     }

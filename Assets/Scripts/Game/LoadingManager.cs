@@ -57,7 +57,8 @@ public class LoadingManager : MonoBehaviour
             if (Mathf.Approximately(ao.progress, 0.9f))
             {
                 GameObject.Find("Input Message").GetComponent<TextMeshProUGUI>().text = "Touch the screen to continue";
-                if (Input.touchCount > 0 || autoLoad)
+                
+                if (Input.touchCount > 0 || autoLoad || (Application.isPlaying && Input.GetMouseButton(0)))
                 {
                     ao.allowSceneActivation = true;
                 }

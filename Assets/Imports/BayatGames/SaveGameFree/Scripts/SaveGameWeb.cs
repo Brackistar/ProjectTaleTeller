@@ -463,13 +463,14 @@ namespace BayatGames.SaveGameFree
 			m_Encoding = encoding;
 		}
 
-		/// <summary>
-		/// Save the specified identifier and obj.
-		/// </summary>
-		/// <param name="identifier">Identifier.</param>
-		/// <param name="obj">Object.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public virtual IEnumerator Save<T> ( string identifier, T obj )
+        /// <summary>
+        /// Save the specified identifier and obj.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="obj">Object.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
+        public virtual IEnumerator Save<T> ( string identifier, T obj )
 		{
 			MemoryStream memoryStream = new MemoryStream ();
 			Serializer.Serialize<T> ( obj, memoryStream, Encoding );
@@ -489,11 +490,12 @@ namespace BayatGames.SaveGameFree
 			}
 		}
 
-		/// <summary>
-		/// Download the specified identifier.
-		/// </summary>
-		/// <param name="identifier">Identifier.</param>
-		public virtual IEnumerator Download ( string identifier )
+        /// <summary>
+        /// Download the specified identifier.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        [System.Obsolete]
+        public virtual IEnumerator Download ( string identifier )
 		{
 			yield return Send ( identifier, null, "load" );
 			if ( m_IsError )
@@ -547,13 +549,14 @@ namespace BayatGames.SaveGameFree
 			return result;
 		}
 
-		/// <summary>
-		/// Send the specified identifier, data and action.
-		/// </summary>
-		/// <param name="identifier">Identifier.</param>
-		/// <param name="data">Data.</param>
-		/// <param name="action">Action.</param>
-		public virtual IEnumerator Send ( string identifier, string data, string action )
+        /// <summary>
+        /// Send the specified identifier, data and action.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="data">Data.</param>
+        /// <param name="action">Action.</param>
+        [System.Obsolete]
+        public virtual IEnumerator Send ( string identifier, string data, string action )
 		{
 			Dictionary<string, string> formFields = new Dictionary<string, string> () { {
 					"identifier",

@@ -26,9 +26,6 @@ public abstract class Character : MonoBehaviour
     private float BaseJump = 1f;
     [Range(100, 500)]
     [SerializeField]
-    private int JumpMultiplier = 300;
-    [Range(100, 500)]
-    [SerializeField]
     private int BaseHealth = 100;
     [Range(0, 500)]
     private int Health;
@@ -105,8 +102,8 @@ public abstract class Character : MonoBehaviour
     private Animator animator;
     [SerializeField]
     private Sprite DeadSprite;
-    [SerializeField]
-    private List<HitBoxOverride> HitBoxOverrides;
+    //[SerializeField]
+    //private List<HitBoxOverride> HitBoxOverrides;
     //private string currentHitbox;
     //private bool lastHitBoxIsLeft;
 
@@ -114,8 +111,10 @@ public abstract class Character : MonoBehaviour
     [Space]
     [Header("Initial Equipment")]
     [SerializeField]
-    private Weapon weapon;
-    public Weapon Weapon { get => weapon; }
+    protected Weapon weapon;
+
+    protected Weapon Weapon;
+    //public Weapon Weapon { get => weapon; }
     [SerializeField]
     private Armor armor;
     public Armor Armor { get => armor; }
@@ -146,7 +145,8 @@ public abstract class Character : MonoBehaviour
         isAlive = true,
         isDead = false,
         isOverPlatform = false,
-        isFalling = false;
+        isFalling = false,
+        isOnGround = true;
     public bool attacking { get => isAttacking; }
     public bool defending { get => isDefending; }
 
@@ -165,8 +165,13 @@ public abstract class Character : MonoBehaviour
             EffectValues = new List<float>();
         if (EffectDurations == null)
             EffectDurations = new List<int>();
-        if (HitBoxOverrides == null)
-            HitBoxOverrides = new List<HitBoxOverride>();
+        //if (HitBoxOverrides == null)
+        //    HitBoxOverrides = new List<HitBoxOverride>();
+
+        if (BaseFallLenght > DeadFallDistance)
+            DeadFallDistance = BaseFallLenght;
+
+        RefreshPolygonCollider();
     }
     // Start is called before the first frame update
     protected virtual void Start()
@@ -177,10 +182,10 @@ public abstract class Character : MonoBehaviour
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         sprite.sortingLayerName = "Walkers";
 
-        if (!HitBoxOverrides.Any(_ => _.StateName.Equals("Idle", StringComparison.InvariantCultureIgnoreCase)))
-            HitBoxOverrides.Add(new HitBoxOverride(
-            name: "Idle",
-            points: GetComponent<PolygonCollider2D>().points));
+        //if (!HitBoxOverrides.Any(_ => _.StateName.Equals("Idle", StringComparison.InvariantCultureIgnoreCase)))
+        //    HitBoxOverrides.Add(new HitBoxOverride(
+        //    name: "Idle",
+        //    points: GetComponent<PolygonCollider2D>().points));
 
         if (Health == 0 || MaxHealth == 0)
             LevelHealth();
@@ -217,13 +222,43 @@ public abstract class Character : MonoBehaviour
             }
         }
 
-        if (animator.GetBool("Grounded") && lastHeight > transform.position.y)
+        CircleCollider2D feetCollider = transform.Find("Feet")
+            .GetComponent<CircleCollider2D>();
+        Vector2 feetheight = new Vector2(
+            x: feetCollider.transform.position.x,
+            y: feetCollider.transform.position.y - feetCollider.radius);
+
+        float distanceToGround = Mathf.Abs((float)Math.Round(
+            value: GroundCheck().y - feetheight.y,
+            digits: 3));
+
+        Debug.Log(
+            message: name + " distance to ground: \'" + distanceToGround + "\'");
+
+        if (!isOnGround && lastHeight > transform.position.y)
             isFalling = true;
+
+        if (distanceToGround <= 0.01f /*&& !animator.GetBool("Grounded")*/ && isFalling)
+        {
+            Ground();
+        }
+        //else if (distanceToGround > 0.01f && isOnGround)
+        //{
+        //    animator.SetBool("Grounded", false);
+        //    isOnGround = false;
+        //}
 
         if (isFalling)
             fallingTime += Time.deltaTime;
 
+        //RefreshPolygonCollider();
+
         lastHeight = transform.position.y;
+    }
+
+    private void LateUpdate()
+    {
+        RefreshPolygonCollider();
     }
 
     /// <summary>
@@ -288,102 +323,6 @@ public abstract class Character : MonoBehaviour
         Debug.Log(name + ": movement speed: " + direction * CalculateSpeed());
         transform.Translate(direction * CalculateSpeed());
     }
-    private IEnumerator LeavePlatform()
-    {
-        isOverPlatform = false;
-        transform.Find("Feet").GetComponent<CircleCollider2D>().enabled = false;
-        yield return new WaitForSeconds(0.5f);
-        transform.Find("Feet").GetComponent<CircleCollider2D>().enabled = true;
-    }
-    /// <summary>
-    /// Mirrors the character over the x axis.
-    /// </summary>
-    /// <param name="flip">Look to the left.</param>
-    public void FlipX(bool flip)
-    {
-        GetComponent<SpriteRenderer>().flipX = LookingLeft = flip;
-
-        //normalCollider.enabled = !flip;
-        //flipedCollider.enabled = flip;
-        //if (isJumping)
-        //{
-        //    if (currentHitbox != "Jump")
-        //    {
-        //        currentHitbox = "Jump";
-        //        ChangeCollider("Jump", flip);
-        //    }
-        //}
-        //else
-        //{
-        //    if ((currentHitbox != "Idle" && lastHitBoxIsLeft != flip) || lastHitBoxIsLeft != flip)
-        //    {
-        //        currentHitbox = "Idle";
-        //        lastHitBoxIsLeft = flip;
-        //        ChangeCollider("Idle", flip);
-        //    }
-        //}
-
-        ChangeCollider("Idle", flip);
-
-        animator.SetBool("LookingLeft", flip);
-    }
-    /// <summary>
-    /// Modifies the form of the collider for the form of an override if it exists on the HitBoxOverrides.
-    /// </summary>
-    /// <param name="HitboxOverrideName">Name of the HitBox override.</param>
-    /// <param name="time">Time for the chnage to happen.</param>
-    /// <param name="flip">Use mirrored collider.</param>
-    private void ChangeCollider(string HitboxOverrideName, float time, bool flip = false)
-    {
-        if (HitBoxOverrides.Any(_ => _.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase)))
-        {
-            HitBoxOverride _ = HitBoxOverrides.FirstOrDefault(_override => _override.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase));
-
-            Debug.Log(
-                message: name + " change collider to: \'" + HitboxOverrideName + "\' in " + time.ToString() + "s.");
-
-            if (flip)
-            {
-                StartCoroutine(_.OverrideInverseX(
-                    collider: GetComponent<PolygonCollider2D>(),
-                    time: time));
-            }
-            else
-            {
-                StartCoroutine(_.Override(
-                    collider: GetComponent<PolygonCollider2D>(),
-                    time: time));
-            }
-        }
-
-    }
-    /// <summary>
-    /// Modifies the form of the collider for the form of an override if it exists on the HitBoxOverrides.
-    /// </summary>
-    /// <param name="HitboxOverrideName">Name of the HitBox override.</param>
-    /// <param name="flip">Use mirrored collider.</param>
-    private void ChangeCollider(string HitboxOverrideName, bool flip = false)
-    {
-        if (HitBoxOverrides.Any(_ => _.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase)))
-        {
-            HitBoxOverride _ = HitBoxOverrides.FirstOrDefault(_override => _override.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase));
-
-            Debug.Log(
-                message: name + " change collider to: \'" + HitboxOverrideName + "\'");
-
-            if (flip)
-            {
-                StartCoroutine(_.OverrideInverseX(
-                    collider: GetComponent<PolygonCollider2D>()));
-            }
-            else
-            {
-                StartCoroutine(_.Override(
-                    collider: GetComponent<PolygonCollider2D>()));
-            }
-        }
-
-    }
     /// <summary>
     /// Starts the attack animation.
     /// </summary>
@@ -392,13 +331,16 @@ public abstract class Character : MonoBehaviour
         if (isAttacking || !isAlive || isHit)
             return;
 
+        Debug.Log(
+            message: name + "attacking with weapon: \'" + Weapon.name + "\'");
+
         isAttacking = true;
 
-        ChangeCollider("Attack", LookingLeft);
+        //ChangeCollider("Attack", LookingLeft);
 
         StartCoroutine(PlayAnimationSound("Attack"));
 
-        weapon.Attack(
+        this.Weapon.Attack(
             time: GetAnimationLength("Attack"),
             origin: transform.position,
             isLeft: LookingLeft);
@@ -416,9 +358,12 @@ public abstract class Character : MonoBehaviour
         if (isDefending || !isAlive || isHit)
             return;
 
+        Debug.Log(
+            message: name + " defending.");
+
         isDefending = true;
 
-        ChangeCollider("Defend", LookingLeft);
+        //ChangeCollider("Defend", LookingLeft);
 
         StartCoroutine(PlayAnimationSound("Defend"));
 
@@ -429,19 +374,27 @@ public abstract class Character : MonoBehaviour
     /// </summary>
     public void Jump()
     {
-        if (isJumping || isAttacking || isDefending || !isAlive || isHit || isFalling)
+        if (isJumping || isAttacking || isDefending || !isAlive || isHit || isFalling || !isOnGround)
             return;
 
         isJumping = true;
+        isOnGround = false;
 
-        ChangeCollider("Jump", LookingLeft);
+        //ChangeCollider("Jump", LookingLeft);
 
         StartCoroutine(PlayAnimationSound("Jump"));
 
-        //animator.SetBool("Grounded", false);
+        animator.SetBool("Grounded", false);
         animator.SetTrigger("Jump");
 
-        GetComponent<Rigidbody2D>().AddForce(Vector2.up * CalculateJumpHeight());
+        float height = CalculateJumpImpulse();
+
+        Debug.Log(
+            message: name + " jump, height: " + height.ToString());
+
+        GetComponent<Rigidbody2D>().AddForce(
+            force: Vector2.up * height,
+            mode: ForceMode2D.Impulse);
     }
     /// <summary>
     /// Starts the hit animation.
@@ -450,6 +403,9 @@ public abstract class Character : MonoBehaviour
     {
         if (isHit || isDead)
             return;
+
+        Debug.Log(
+            message: name + " hit.");
 
         isHit = true;
 
@@ -473,6 +429,9 @@ public abstract class Character : MonoBehaviour
         StartCoroutine(PlayAnimationSound("Death"));
 
         animator.SetTrigger("Death");
+
+        Debug.Log(
+            message: name + " is dead");
     }
     /// <summary>
     /// Reproduces the sound of falling to the ground.
@@ -481,17 +440,24 @@ public abstract class Character : MonoBehaviour
     {
         animator.SetBool("Grounded", true);
         isFalling = false;
+        isJumping = false;
+        isOnGround = true;
+
+        Debug.Log(
+            message: name + "grounded.");
 
         if (BaseFallDamage > 0)
         {
-            float fallDistance = (Mathf.Abs(Physics2D.gravity.y) * Time.deltaTime) * (Mathf.Pow(fallingTime, 2)) / 2;
+            float fallDistance = (float)Math.Round(
+                value: Mathf.Abs(Physics2D.gravity.y) * Time.deltaTime * Mathf.Pow(fallingTime, 2) / 2,
+                digits: 3);
             Debug.Log(
-                message: name + " Fall: " + fallDistance.ToString());
+                message: name + " fall distance: \'" + fallDistance.ToString() + "\' min fall for damage : \'" + BaseFallLenght.ToString() + "\'");
 
             if (fallDistance >= DeadFallDistance)
             {
                 Debug.Log(
-                    message: name + " deadfall");
+                    message: name + " dead fall. Dead fall distance: \'" + DeadFallDistance.ToString() + "\'");
                 Death();
                 return;
             }
@@ -500,9 +466,15 @@ public abstract class Character : MonoBehaviour
             if (fallDistance > minFallLenght)
             {
                 float damage = (fallDistance - minFallLenght) * BaseFallDamage;
+
                 Debug.Log(
                     message: name + " raw fall damage: " + damage.ToString());
+
                 damage -= damage * (GetArmorlessDefense() * 0.5f);
+
+                Debug.Log(
+                    message: name + " applied damage: \'" + damage + "\'");
+
                 Damage(damage);
             }
         }
@@ -566,7 +538,7 @@ public abstract class Character : MonoBehaviour
         FinishingAnimation(stateName);
     }
     /// <summary>
-    /// Do the final actions ater an animation plays.
+    /// Do the final actions after an animation plays.
     /// </summary>
     /// <param name="stateName">Name of the state in wich the animation plays.</param>
     private void FinishingAnimation(string stateName)
@@ -593,6 +565,141 @@ public abstract class Character : MonoBehaviour
                 break;
         }
     }
+    /// <summary>
+    /// Allows a character to pass through a platform.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator LeavePlatform()
+    {
+        isOverPlatform = false;
+        transform.Find("Feet").GetComponent<Collider2D>().enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        transform.Find("Feet").GetComponent<Collider2D>().enabled = true;
+    }
+    /// <summary>
+    /// Mirrors the character over the x axis.
+    /// </summary>
+    /// <param name="flip">Look to the left.</param>
+    public void FlipX(bool flip)
+    {
+        GetComponent<SpriteRenderer>().flipX = LookingLeft = flip;
+
+        //normalCollider.enabled = !flip;
+        //flipedCollider.enabled = flip;
+        //if (isJumping)
+        //{
+        //    if (currentHitbox != "Jump")
+        //    {
+        //        currentHitbox = "Jump";
+        //        ChangeCollider("Jump", flip);
+        //    }
+        //}
+        //else
+        //{
+        //    if ((currentHitbox != "Idle" && lastHitBoxIsLeft != flip) || lastHitBoxIsLeft != flip)
+        //    {
+        //        currentHitbox = "Idle";
+        //        lastHitBoxIsLeft = flip;
+        //        ChangeCollider("Idle", flip);
+        //    }
+        //}
+
+        //ChangeCollider("Idle", flip);
+
+        animator.SetBool("LookingLeft", flip);
+    }
+    /// <summary>
+    /// Changes the polygon collider paths to match the physics shape of the current sprite.
+    /// </summary>
+    private void RefreshPolygonCollider()
+    {
+        Debug.Log(
+            message: name + " refresh polygon collider.");
+
+        PolygonCollider2D collider = GetComponent<PolygonCollider2D>();
+        Sprite sprite = GetComponent<SpriteRenderer>().sprite;
+
+        for (int i = 0; i < collider.pathCount; i++)
+            collider.SetPath(index: i, points: new List<Vector2>());
+
+        collider.pathCount = sprite.GetPhysicsShapeCount();
+
+        List<Vector2> path = new List<Vector2>();
+
+        for (int i = 0; i < collider.pathCount; i++)
+        {
+            path.Clear();
+            sprite.GetPhysicsShape(i, path);
+
+            if (LookingLeft)
+            {
+                Debug.Log(
+                    message: name + " changing collider to left orientation.");
+
+                path = path.Select(_path => { _path.x *= -1; return _path; })
+                    .ToList();
+            }
+
+            collider.SetPath(i, path);
+        }
+    }
+    /// <summary>
+    /// Modifies the form of the collider for the form of an override if it exists on the HitBoxOverrides.
+    /// </summary>
+    /// <param name="HitboxOverrideName">Name of the HitBox override.</param>
+    /// <param name="time">Time for the chnage to happen.</param>
+    /// <param name="flip">Use mirrored collider.</param>
+    //private void ChangeCollider(string HitboxOverrideName, float time, bool flip = false)
+    //{
+    //    if (HitBoxOverrides.Any(_ => _.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase)))
+    //    {
+    //        HitBoxOverride _ = HitBoxOverrides.FirstOrDefault(_override => _override.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase));
+
+    //        Debug.Log(
+    //            message: name + " change collider to: \'" + HitboxOverrideName + "\' in " + time.ToString() + "s.");
+
+    //        if (flip)
+    //        {
+    //            StartCoroutine(_.OverrideInverseX(
+    //                collider: GetComponent<PolygonCollider2D>(),
+    //                time: time));
+    //        }
+    //        else
+    //        {
+    //            StartCoroutine(_.Override(
+    //                collider: GetComponent<PolygonCollider2D>(),
+    //                time: time));
+    //        }
+    //    }
+
+    //}
+    /// <summary>
+    /// Modifies the form of the collider for the form of an override if it exists on the HitBoxOverrides.
+    /// </summary>
+    /// <param name="HitboxOverrideName">Name of the HitBox override.</param>
+    /// <param name="flip">Use mirrored collider.</param>
+    //private void ChangeCollider(string HitboxOverrideName, bool flip = false)
+    //{
+    //    if (HitBoxOverrides.Any(_ => _.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase)))
+    //    {
+    //        HitBoxOverride _ = HitBoxOverrides.FirstOrDefault(_override => _override.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase));
+
+    //        Debug.Log(
+    //            message: name + " change collider to: \'" + HitboxOverrideName + "\'");
+
+    //        if (flip)
+    //        {
+    //            StartCoroutine(_.OverrideInverseX(
+    //                collider: GetComponent<PolygonCollider2D>()));
+    //        }
+    //        else
+    //        {
+    //            StartCoroutine(_.Override(
+    //                collider: GetComponent<PolygonCollider2D>()));
+    //        }
+    //    }
+
+    //}
     /// <summary>
     /// Character current action includes an attack.
     /// </summary>
@@ -674,7 +781,7 @@ public abstract class Character : MonoBehaviour
     /// Returns the sprite assigned to the character
     /// </summary>
     /// <returns></returns>
-    public Sprite GetImage()
+    public virtual Sprite GetImage()
     {
         return GetComponent<SpriteRenderer>().sprite;
     }
@@ -756,7 +863,7 @@ public abstract class Character : MonoBehaviour
     /// <returns></returns>
     public float GetDamage()
     {
-        float WeaponDamage = Weapon.Damage,
+        float WeaponDamage = this.Weapon.Damage,
             Strength = this.Strength;
         if (effects.Contains(EffectName.Strength))
             Strength += Strength * GetEffectValue(EffectName.Strength);
@@ -792,7 +899,7 @@ public abstract class Character : MonoBehaviour
         if (effects.Contains(EffectName.Resistance))
             Resistance += Resistance * GetEffectValue(EffectName.Resistance);
 
-        Resistance = Resistance * 0.01f;
+        Resistance *= 0.01f;
 
         float result = Resistance + armor.Protection;
 
@@ -811,7 +918,7 @@ public abstract class Character : MonoBehaviour
         return result; ;
     }
     /// <summary>
-    /// Returns the damage percentaje nullified by all character defenses.
+    /// Returns the damage percentaje nullified by the character resistance and resistance effect if applied.
     /// </summary>
     /// <returns></returns>
     private float GetArmorlessDefense()
@@ -821,12 +928,7 @@ public abstract class Character : MonoBehaviour
         if (effects.Contains(EffectName.Resistance))
             Resistance += Resistance * GetEffectValue(EffectName.Resistance);
 
-        Resistance = Resistance * 0.01f;
-
-        //float result = Resistance + armor.Protection;
-
-        //if (isDefending)
-        //    result += shield.Protection;
+        Resistance *= 0.01f;
 
         if (Resistance > 1)
         {
@@ -855,13 +957,13 @@ public abstract class Character : MonoBehaviour
             weaponInitialPosition.x += 0.25f;
         }
 
-        this.weapon = Instantiate(
+        this.Weapon = Instantiate(
             original: weapon.gameObject,
             position: weaponInitialPosition,
             rotation: Quaternion.identity,
             parent: transform).GetComponent<Weapon>();
 
-        this.weapon.OnAttackHit += OnWeaponAttackHit;
+        this.Weapon.OnAttackHit += OnWeaponAttackHit;
     }
 
     /// <summary>
@@ -877,8 +979,16 @@ public abstract class Character : MonoBehaviour
     /// </summary>
     private void RemoveWeapon()
     {
-        this.weapon.OnAttackHit -= OnWeaponAttackHit;
-        GameObject.Destroy(this.weapon.gameObject);
+        this.Weapon.OnAttackHit -= OnWeaponAttackHit;
+        GameObject.Destroy(this.Weapon.gameObject);
+    }
+    /// <summary>
+    /// Returns the length of the currently equiped weapon.
+    /// </summary>
+    /// <returns></returns>
+    public float GetAttackRange()
+    {
+        return this.Weapon.ARange;
     }
     /// <summary>
     /// Calculates the final moving speed multiplier using BaseSpeed and Agility
@@ -886,8 +996,11 @@ public abstract class Character : MonoBehaviour
     /// <returns>Final moving speed. 2 decimals</returns>
     private float CalculateSpeed()
     {
+        //float result = (float)System.Math.Round(
+        //    value: (BaseSpeed + (Agility * 0.1f)) * Time.deltaTime,
+        //    digits: 2);
         float result = (float)System.Math.Round(
-            value: (BaseSpeed + (Agility * 0.1f)) * Time.deltaTime,
+            value: (BaseSpeed + (Agility * 0.01f)) * Time.deltaTime,
             digits: 2);
         return result;
     }
@@ -895,15 +1008,69 @@ public abstract class Character : MonoBehaviour
     /// Calculates the final impulse for jumping
     /// </summary>
     /// <returns>Final jumping impulse. 2 decimals</returns>
-    private float CalculateJumpHeight()
+    private float CalculateJumpImpulse()
     {
         //float result = (float)System.Math.Round(
         //    value: (BaseJump + (Agility * 0.1f)) * JumpMultiplier,
         //    digits: 2);
 
         float result = (float)System.Math.Round(
-            value: (BaseJump * JumpMultiplier) + (Agility * 0.1f),
+            value: BaseJump + (Agility * 0.1f),
             digits: 2);
+
+        return result;
+    }
+    /// <summary>
+    /// Checks is there is ground under the character.
+    /// </summary>
+    /// <returns>Position of the ground.</returns>
+    public Vector2 GroundCheck()
+    {
+        int layerMask = 1 << 10;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, layerMask);
+        if (hit)
+        {
+            Debug.Log(
+                message: name + " ground check, ground position: \'" + hit.point.ToString() + "\'");
+            //return hit.transform.position;
+            return hit.point;
+        }
+        else
+        {
+            string error = name + " ground not found.";
+            Debug.LogError(
+                message: error);
+            throw new Exception(
+                message: error);
+        }
+    }
+    /// <summary>
+    /// Calculates the height of a jump based on the current agility
+    /// </summary>
+    /// <returns></returns>
+    public float CalculateMaxJumpHeight()
+    {
+        float result = 0;
+
+        Rigidbody2D rigidbody2D = GetComponent<Rigidbody2D>();
+        float gravity = rigidbody2D.gravityScale * Physics2D.gravity.magnitude;
+        float v = CalculateJumpImpulse() / rigidbody2D.mass;
+
+        result = GroundCheck().y + (v * v) / (2 * gravity);
+
+        PolygonCollider2D collider = GetComponent<PolygonCollider2D>();
+        float headHeight = collider.points
+                    .OrderByDescending(_ => _.y)
+                    .FirstOrDefault().y;
+
+        Debug.DrawLine(
+            start: new Vector2(
+                x: transform.position.x,
+                y: headHeight),
+            end: new Vector2(
+                x: transform.position.x,
+                y: headHeight + result),
+            color: Color.red);
 
         return result;
     }
@@ -1046,21 +1213,21 @@ public abstract class Character : MonoBehaviour
 
         switch (collision.gameObject.tag)
         {
-            case "Ground":
+            //case "Ground":
             case "Enemy":
             case "Player":
                 Ground();
                 isOverPlatform = false;
                 break;
             case "Moving Platform":
-                Ground();
+                //Ground();
                 isOverPlatform = true;
                 currentParent = transform.parent;
                 transform.SetParent(
                     p: collision.collider.transform);
                 break;
             case "Platform":
-                Ground();
+                //Ground();
                 isOverPlatform = true;
                 break;
             case "Border":
@@ -1076,158 +1243,161 @@ public abstract class Character : MonoBehaviour
     {
         switch (collision.gameObject.tag)
         {
-            case "Ground":
-                animator.SetBool("Grounded", false);
-                break;
+            //case "Ground":
+            //    animator.SetBool("Grounded", false);
+            //    transform.SetParent(
+            //        p: currentParent);
+            //    break;
             case "Moving Platform":
-                animator.SetBool("Grounded", false);
+                //animator.SetBool("Grounded", false);
                 isOverPlatform = false;
                 transform.SetParent(
                     p: currentParent);
                 break;
-            case "Platform":
-                animator.SetBool("Grounded", false);
-                isOverPlatform = false;
-                break;
+                //case "Platform":
+                //    animator.SetBool("Grounded", false);
+                //    isOverPlatform = false;
+                //    transform.SetParent(
+                //        p: currentParent);
+                //    break;
         }
 
     }
-
     protected abstract void OnWeaponAttackHit(Collider2D collider);
 }
-[System.Serializable]
-public class HitBoxOverride
-{
-    public string StateName;
-    public Vector2[] Points;
+//[System.Serializable]
+//public class HitBoxOverride
+//{
+//    public string StateName;
+//    public Vector2[] Points;
 
-    public HitBoxOverride(string name, IEnumerable<Vector2> points)
-    {
-        StateName = name;
-        Points = points.OrderBy(_ => _.x)
-            .ToArray();
-    }
-}
-public static class HitBoxOverrideHelper
-{
-    /// <summary>
-    /// Changes the points of a collider with the points of a HitBoxOverride over time.
-    /// </summary>
-    /// <param name="collider">PolygonCollider2D to override</param>
-    /// <param name="hitBoxOverride">HitBoxOveriide to use</param>
-    /// <param name="time">Time for the change to complete</param>
-    /// <returns></returns>
-    public static IEnumerator Override(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-    {
-        if (collider.GetTotalPointCount() != hitBoxOverride.Points.Length)
-            throw new ArgumentOutOfRangeException(paramName: "collider");
+//    public HitBoxOverride(string name, IEnumerable<Vector2> points)
+//    {
+//        StateName = name;
+//        Points = points.OrderBy(_ => _.x)
+//            .ToArray();
+//    }
+//}
+//public static class HitBoxOverrideHelper
+//{
+//    /// <summary>
+//    /// Changes the points of a collider with the points of a HitBoxOverride over time.
+//    /// </summary>
+//    /// <param name="collider">PolygonCollider2D to override</param>
+//    /// <param name="hitBoxOverride">HitBoxOveriide to use</param>
+//    /// <param name="time">Time for the change to complete</param>
+//    /// <returns></returns>
+//    public static IEnumerator Override(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
+//    {
+//        if (collider.GetTotalPointCount() != hitBoxOverride.Points.Length)
+//            throw new ArgumentOutOfRangeException(paramName: "collider");
 
-        float elapsedTime = 0,
-            step;
+//        float elapsedTime = 0,
+//            step;
 
-        while (elapsedTime < time)
-        {
-            elapsedTime += Time.deltaTime;
+//        while (elapsedTime < time)
+//        {
+//            elapsedTime += Time.deltaTime;
 
-            for (int i = 0; i < collider.GetTotalPointCount(); i++)
-            {
-                Vector2 current = collider.points[i],
-                    target = hitBoxOverride.Points[i];
+//            for (int i = 0; i < collider.GetTotalPointCount(); i++)
+//            {
+//                Vector2 current = collider.points[i],
+//                    target = hitBoxOverride.Points[i];
 
-                step = Vector2.Distance(current, target) / (time - elapsedTime) * Time.deltaTime;
+//                step = Vector2.Distance(current, target) / (time - elapsedTime) * Time.deltaTime;
 
-                collider.points[i] = Vector2.MoveTowards(
-                    current: current,
-                    target: target,
-                    maxDistanceDelta: step);
-            }
-            yield return null;
-        }
-    }
-    public static IEnumerator Override(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-    {
-        if (collider.GetTotalPointCount() != hitBoxOverride.Points.Length)
-            throw new ArgumentOutOfRangeException(paramName: "collider");
+//                collider.points[i] = Vector2.MoveTowards(
+//                    current: current,
+//                    target: target,
+//                    maxDistanceDelta: step);
+//            }
+//            yield return null;
+//        }
+//    }
+//    public static IEnumerator Override(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
+//    {
+//        if (collider.GetTotalPointCount() != hitBoxOverride.Points.Length)
+//            throw new ArgumentOutOfRangeException(paramName: "collider");
 
-        for (int i = 0; i < collider.GetTotalPointCount(); i++)
-        {
-            collider.points[i] = hitBoxOverride.Points[i];
-        }
-        yield return null;
-    }
-    public static IEnumerator OverrideInverseX(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-    {
-        List<Vector2> _points = hitBoxOverride.Points
-            .ToList();
-        _points.ForEach(point => point.x *= -1);
+//        for (int i = 0; i < collider.GetTotalPointCount(); i++)
+//        {
+//            collider.points[i] = hitBoxOverride.Points[i];
+//        }
+//        yield return null;
+//    }
+//    public static IEnumerator OverrideInverseX(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
+//    {
+//        List<Vector2> _points = hitBoxOverride.Points
+//            .ToList();
+//        _points.ForEach(point => point.x *= -1);
 
-        HitBoxOverride _ = new HitBoxOverride(
-            name: hitBoxOverride.StateName,
-            points: _points.ToArray());
+//        HitBoxOverride _ = new HitBoxOverride(
+//            name: hitBoxOverride.StateName,
+//            points: _points.ToArray());
 
-        return _.Override(collider, time);
-    }
-    public static IEnumerator OverrideInverseX(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-    {
-        List<Vector2> _points = hitBoxOverride.Points
-            .ToList();
-        _points.ForEach(point => point.x *= -1);
+//        return _.Override(collider, time);
+//    }
+//    public static IEnumerator OverrideInverseX(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
+//    {
+//        List<Vector2> _points = hitBoxOverride.Points
+//            .ToList();
+//        _points.ForEach(point => point.x *= -1);
 
-        HitBoxOverride _ = new HitBoxOverride(
-            name: hitBoxOverride.StateName,
-            points: _points.ToArray());
+//        HitBoxOverride _ = new HitBoxOverride(
+//            name: hitBoxOverride.StateName,
+//            points: _points.ToArray());
 
-        return _.Override(collider);
-    }
-    public static IEnumerator OverrideInverseY(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-    {
-        List<Vector2> _points = hitBoxOverride.Points
-            .ToList();
-        _points.ForEach(point => point.y *= -1);
+//        return _.Override(collider);
+//    }
+//    public static IEnumerator OverrideInverseY(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
+//    {
+//        List<Vector2> _points = hitBoxOverride.Points
+//            .ToList();
+//        _points.ForEach(point => point.y *= -1);
 
-        HitBoxOverride _ = new HitBoxOverride(
-            name: hitBoxOverride.StateName,
-            points: _points.ToArray());
+//        HitBoxOverride _ = new HitBoxOverride(
+//            name: hitBoxOverride.StateName,
+//            points: _points.ToArray());
 
-        return _.Override(collider, time);
-    }
-    public static IEnumerator OverrideInverseY(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-    {
-        List<Vector2> _points = hitBoxOverride.Points
-            .ToList();
-        _points.ForEach(point => point.y *= -1);
+//        return _.Override(collider, time);
+//    }
+//    public static IEnumerator OverrideInverseY(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
+//    {
+//        List<Vector2> _points = hitBoxOverride.Points
+//            .ToList();
+//        _points.ForEach(point => point.y *= -1);
 
-        HitBoxOverride _ = new HitBoxOverride(
-            name: hitBoxOverride.StateName,
-            points: _points.ToArray());
+//        HitBoxOverride _ = new HitBoxOverride(
+//            name: hitBoxOverride.StateName,
+//            points: _points.ToArray());
 
-        return _.Override(collider);
-    }
-    public static IEnumerator OverrideInverse(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-    {
-        List<Vector2> _points = hitBoxOverride.Points
-            .ToList();
-        _points.ForEach(point => { point.x *= -1; point.y *= -1; });
+//        return _.Override(collider);
+//    }
+//    public static IEnumerator OverrideInverse(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
+//    {
+//        List<Vector2> _points = hitBoxOverride.Points
+//            .ToList();
+//        _points.ForEach(point => { point.x *= -1; point.y *= -1; });
 
-        HitBoxOverride _ = new HitBoxOverride(
-            name: hitBoxOverride.StateName,
-            points: _points.ToArray());
+//        HitBoxOverride _ = new HitBoxOverride(
+//            name: hitBoxOverride.StateName,
+//            points: _points.ToArray());
 
-        return _.Override(collider, time);
-    }
-    public static IEnumerator OverrideInverse(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-    {
-        List<Vector2> _points = hitBoxOverride.Points
-            .ToList();
-        _points.ForEach(point => { point.x *= -1; point.y *= -1; });
+//        return _.Override(collider, time);
+//    }
+//    public static IEnumerator OverrideInverse(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
+//    {
+//        List<Vector2> _points = hitBoxOverride.Points
+//            .ToList();
+//        _points.ForEach(point => { point.x *= -1; point.y *= -1; });
 
-        HitBoxOverride _ = new HitBoxOverride(
-            name: hitBoxOverride.StateName,
-            points: _points.ToArray());
+//        HitBoxOverride _ = new HitBoxOverride(
+//            name: hitBoxOverride.StateName,
+//            points: _points.ToArray());
 
-        return _.Override(collider);
-    }
-}
+//        return _.Override(collider);
+//    }
+//}
 
 /// <summary>
 /// Collection of posible effect names.
