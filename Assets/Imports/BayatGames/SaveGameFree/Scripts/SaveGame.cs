@@ -205,6 +205,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="obj">Object to save.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj)
         {
             Save<T>(identifier, obj, Encode, EncodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -217,6 +218,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="obj">Object.</param>
         /// <param name="encode">If set to <c>true</c> encode.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, bool encode)
         {
             Save<T>(identifier, obj, encode, EncodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -229,6 +231,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="obj">Object.</param>
         /// <param name="encodePassword">Encode password.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, string encodePassword)
         {
             Save<T>(identifier, obj, Encode, encodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -241,6 +244,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="obj">Object.</param>
         /// <param name="serializer">Serializer.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, ISaveGameSerializer serializer)
         {
             Save<T>(identifier, obj, Encode, EncodePassword, serializer, Encoder, DefaultEncoding, SavePath);
@@ -253,6 +257,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="obj">Object.</param>
         /// <param name="encoder">Encoder.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, ISaveGameEncoder encoder)
         {
             Save<T>(identifier, obj, Encode, EncodePassword, Serializer, encoder, DefaultEncoding, SavePath);
@@ -265,6 +270,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="obj">Object.</param>
         /// <param name="encoding">Encoding.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, Encoding encoding)
         {
             Save<T>(identifier, obj, Encode, EncodePassword, Serializer, Encoder, encoding, SavePath);
@@ -277,6 +283,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="obj">Object.</param>
         /// <param name="savePath">Save path.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, SaveGamePath savePath)
         {
             Save<T>(identifier, obj, Encode, EncodePassword, Serializer, Encoder, DefaultEncoding, savePath);
@@ -294,6 +301,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="encoding">Encoding.</param>
         /// <param name="path">Path.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static void Save<T>(string identifier, T obj, bool encode, string password, ISaveGameSerializer serializer, ISaveGameEncoder encoder, Encoding encoding, SaveGamePath path)
         {
             if (string.IsNullOrEmpty(identifier))
@@ -423,6 +431,7 @@ namespace BayatGames.SaveGameFree
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier)
         {
             return Load<T>(identifier, default(T), Encode, EncodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -434,6 +443,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="defaultValue">Default value.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue)
         {
             return Load<T>(identifier, defaultValue, Encode, EncodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -445,6 +455,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="encodePassword">Encode password.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, bool encode, string encodePassword)
         {
             return Load<T>(identifier, default(T), encode, encodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -456,6 +467,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="serializer">Serializer.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, ISaveGameSerializer serializer)
         {
             return Load<T>(identifier, default(T), Encode, EncodePassword, serializer, Encoder, DefaultEncoding, SavePath);
@@ -467,6 +479,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="encoder">Encoder.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, ISaveGameEncoder encoder)
         {
             return Load<T>(identifier, default(T), Encode, EncodePassword, Serializer, encoder, DefaultEncoding, SavePath);
@@ -478,6 +491,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="encoding">Encoding.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, Encoding encoding)
         {
             return Load<T>(identifier, default(T), Encode, EncodePassword, Serializer, Encoder, encoding, SavePath);
@@ -489,6 +503,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="identifier">Identifier.</param>
         /// <param name="savePath">Save path.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, SaveGamePath savePath)
         {
             return Load<T>(identifier, default(T), Encode, EncodePassword, Serializer, Encoder, DefaultEncoding, savePath);
@@ -501,6 +516,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="defaultValue">Default value.</param>
         /// <param name="encode">If set to <c>true</c> encode.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, bool encode)
         {
             return Load<T>(identifier, defaultValue, encode, EncodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -513,6 +529,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="defaultValue">Default value.</param>
         /// <param name="encodePassword">Encode password.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, string encodePassword)
         {
             return Load<T>(identifier, defaultValue, Encode, encodePassword, Serializer, Encoder, DefaultEncoding, SavePath);
@@ -525,6 +542,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="defaultValue">Default value.</param>
         /// <param name="serializer">Serializer.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, ISaveGameSerializer serializer)
         {
             return Load<T>(identifier, defaultValue, Encode, EncodePassword, serializer, Encoder, DefaultEncoding, SavePath);
@@ -537,6 +555,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="defaultValue">Default value.</param>
         /// <param name="encoder">Encoder.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, ISaveGameEncoder encoder)
         {
             return Load<T>(identifier, defaultValue, Encode, EncodePassword, Serializer, encoder, DefaultEncoding, SavePath);
@@ -549,6 +568,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="defaultValue">Default value.</param>
         /// <param name="encoding">Encoding.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, Encoding encoding)
         {
             return Load<T>(identifier, defaultValue, Encode, EncodePassword, Serializer, Encoder, encoding, SavePath);
@@ -561,6 +581,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="defaultValue">Default value.</param>
         /// <param name="savePath">Save path.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, SaveGamePath savePath)
         {
             return Load<T>(identifier, defaultValue, Encode, EncodePassword, Serializer, Encoder, DefaultEncoding, savePath);
@@ -578,6 +599,7 @@ namespace BayatGames.SaveGameFree
         /// <param name="encoding">Encoding.</param>
         /// <param name="path">Path.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
+        [System.Obsolete]
         public static T Load<T>(string identifier, T defaultValue, bool encode, string password, ISaveGameSerializer serializer, ISaveGameEncoder encoder, Encoding encoding, SaveGamePath path)
         {
             if (string.IsNullOrEmpty(identifier))
@@ -1034,6 +1056,7 @@ namespace BayatGames.SaveGameFree
         /// Checks if the IO is supported on current platform or not.
         /// </summary>
         /// <returns><c>true</c>, if supported was IOed, <c>false</c> otherwise.</returns>
+        [System.Obsolete]
         public static bool IOSupported()
         {
             return Application.platform != RuntimePlatform.WebGLPlayer &&

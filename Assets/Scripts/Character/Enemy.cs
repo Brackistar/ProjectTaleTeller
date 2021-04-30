@@ -20,7 +20,7 @@ public class Enemy : Character
     public float FieldOfVision = 80;
     public Character Target;
     // Dead related
-    public EnemyDead OnDeath;
+    public event EnemyDead OnDeath;
     [SerializeField]
     [Min(0)]
     protected int BaseXP;

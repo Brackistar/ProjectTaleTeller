@@ -45,19 +45,19 @@ public abstract class Character : MonoBehaviour
     [Header("Stats")]
     [SerializeField]
     [Range(1, 10)]
-    private int Agility = 1;
+    protected int Agility = 1;
     [SerializeField]
     [Range(1, 10)]
-    private int Strength = 1;
+    protected int Strength = 1;
     [SerializeField]
     [Range(1, 10)]
-    private int Resistance = 1;
+    protected int Resistance = 1;
     [SerializeField]
     [Range(1, 10)]
-    private int Vitality = 1;
+    protected int Vitality = 1;
     [SerializeField]
     [Range(1, 10)]
-    private int Luck = 1;
+    protected int Luck = 1;
 
     // Audio related variables
     [Space]
@@ -644,63 +644,6 @@ public abstract class Character : MonoBehaviour
         }
     }
     /// <summary>
-    /// Modifies the form of the collider for the form of an override if it exists on the HitBoxOverrides.
-    /// </summary>
-    /// <param name="HitboxOverrideName">Name of the HitBox override.</param>
-    /// <param name="time">Time for the chnage to happen.</param>
-    /// <param name="flip">Use mirrored collider.</param>
-    //private void ChangeCollider(string HitboxOverrideName, float time, bool flip = false)
-    //{
-    //    if (HitBoxOverrides.Any(_ => _.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase)))
-    //    {
-    //        HitBoxOverride _ = HitBoxOverrides.FirstOrDefault(_override => _override.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase));
-
-    //        Debug.Log(
-    //            message: name + " change collider to: \'" + HitboxOverrideName + "\' in " + time.ToString() + "s.");
-
-    //        if (flip)
-    //        {
-    //            StartCoroutine(_.OverrideInverseX(
-    //                collider: GetComponent<PolygonCollider2D>(),
-    //                time: time));
-    //        }
-    //        else
-    //        {
-    //            StartCoroutine(_.Override(
-    //                collider: GetComponent<PolygonCollider2D>(),
-    //                time: time));
-    //        }
-    //    }
-
-    //}
-    /// <summary>
-    /// Modifies the form of the collider for the form of an override if it exists on the HitBoxOverrides.
-    /// </summary>
-    /// <param name="HitboxOverrideName">Name of the HitBox override.</param>
-    /// <param name="flip">Use mirrored collider.</param>
-    //private void ChangeCollider(string HitboxOverrideName, bool flip = false)
-    //{
-    //    if (HitBoxOverrides.Any(_ => _.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase)))
-    //    {
-    //        HitBoxOverride _ = HitBoxOverrides.FirstOrDefault(_override => _override.StateName.Equals(HitboxOverrideName, StringComparison.InvariantCultureIgnoreCase));
-
-    //        Debug.Log(
-    //            message: name + " change collider to: \'" + HitboxOverrideName + "\'");
-
-    //        if (flip)
-    //        {
-    //            StartCoroutine(_.OverrideInverseX(
-    //                collider: GetComponent<PolygonCollider2D>()));
-    //        }
-    //        else
-    //        {
-    //            StartCoroutine(_.Override(
-    //                collider: GetComponent<PolygonCollider2D>()));
-    //        }
-    //    }
-
-    //}
-    /// <summary>
     /// Character current action includes an attack.
     /// </summary>
     /// <returns></returns>
@@ -739,6 +682,22 @@ public abstract class Character : MonoBehaviour
     public float GetVitality()
     {
         return Vitality;
+    }
+    /// <summary>
+    /// Returns a random number between the character's luck value and 10.
+    /// </summary>
+    /// <returns></returns>
+    public int GetLuckyTry()
+    {
+        if (Luck == 10)
+            return 10;
+
+        int result = UnityEngine.Random.Range(this.Luck, 10);
+
+        Debug.Log(
+            message: name + " lucky try result: \'" + result.ToString() + "\'");
+
+        return result;
     }
     /// <summary>
     /// Returns the max value of health allowed
@@ -954,7 +913,8 @@ public abstract class Character : MonoBehaviour
 
         if (!LookingLeft)
         {
-            weaponInitialPosition.x += 0.25f;
+            //weaponInitialPosition.x += 0.25f;
+            weaponInitialPosition *= Vector2.left;
         }
 
         this.Weapon = Instantiate(
@@ -989,6 +949,10 @@ public abstract class Character : MonoBehaviour
     public float GetAttackRange()
     {
         return this.Weapon.ARange;
+    }
+    public Weapon.WeaponKind GetWeaponKind()
+    {
+        return this.Weapon.Type;
     }
     /// <summary>
     /// Calculates the final moving speed multiplier using BaseSpeed and Agility
@@ -1062,8 +1026,9 @@ public abstract class Character : MonoBehaviour
         float headHeight = collider.points
                     .OrderByDescending(_ => _.y)
                     .FirstOrDefault().y;
-
-        Debug.DrawLine(
+        if (DeveloperMenuController.viewAIRaytrace)
+        {
+            Debug.DrawLine(
             start: new Vector2(
                 x: transform.position.x,
                 y: headHeight),
@@ -1071,7 +1036,7 @@ public abstract class Character : MonoBehaviour
                 x: transform.position.x,
                 y: headHeight + result),
             color: Color.red);
-
+        }
         return result;
     }
     /// <summary>
@@ -1265,140 +1230,6 @@ public abstract class Character : MonoBehaviour
     }
     protected abstract void OnWeaponAttackHit(Collider2D collider);
 }
-//[System.Serializable]
-//public class HitBoxOverride
-//{
-//    public string StateName;
-//    public Vector2[] Points;
-
-//    public HitBoxOverride(string name, IEnumerable<Vector2> points)
-//    {
-//        StateName = name;
-//        Points = points.OrderBy(_ => _.x)
-//            .ToArray();
-//    }
-//}
-//public static class HitBoxOverrideHelper
-//{
-//    /// <summary>
-//    /// Changes the points of a collider with the points of a HitBoxOverride over time.
-//    /// </summary>
-//    /// <param name="collider">PolygonCollider2D to override</param>
-//    /// <param name="hitBoxOverride">HitBoxOveriide to use</param>
-//    /// <param name="time">Time for the change to complete</param>
-//    /// <returns></returns>
-//    public static IEnumerator Override(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-//    {
-//        if (collider.GetTotalPointCount() != hitBoxOverride.Points.Length)
-//            throw new ArgumentOutOfRangeException(paramName: "collider");
-
-//        float elapsedTime = 0,
-//            step;
-
-//        while (elapsedTime < time)
-//        {
-//            elapsedTime += Time.deltaTime;
-
-//            for (int i = 0; i < collider.GetTotalPointCount(); i++)
-//            {
-//                Vector2 current = collider.points[i],
-//                    target = hitBoxOverride.Points[i];
-
-//                step = Vector2.Distance(current, target) / (time - elapsedTime) * Time.deltaTime;
-
-//                collider.points[i] = Vector2.MoveTowards(
-//                    current: current,
-//                    target: target,
-//                    maxDistanceDelta: step);
-//            }
-//            yield return null;
-//        }
-//    }
-//    public static IEnumerator Override(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-//    {
-//        if (collider.GetTotalPointCount() != hitBoxOverride.Points.Length)
-//            throw new ArgumentOutOfRangeException(paramName: "collider");
-
-//        for (int i = 0; i < collider.GetTotalPointCount(); i++)
-//        {
-//            collider.points[i] = hitBoxOverride.Points[i];
-//        }
-//        yield return null;
-//    }
-//    public static IEnumerator OverrideInverseX(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-//    {
-//        List<Vector2> _points = hitBoxOverride.Points
-//            .ToList();
-//        _points.ForEach(point => point.x *= -1);
-
-//        HitBoxOverride _ = new HitBoxOverride(
-//            name: hitBoxOverride.StateName,
-//            points: _points.ToArray());
-
-//        return _.Override(collider, time);
-//    }
-//    public static IEnumerator OverrideInverseX(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-//    {
-//        List<Vector2> _points = hitBoxOverride.Points
-//            .ToList();
-//        _points.ForEach(point => point.x *= -1);
-
-//        HitBoxOverride _ = new HitBoxOverride(
-//            name: hitBoxOverride.StateName,
-//            points: _points.ToArray());
-
-//        return _.Override(collider);
-//    }
-//    public static IEnumerator OverrideInverseY(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-//    {
-//        List<Vector2> _points = hitBoxOverride.Points
-//            .ToList();
-//        _points.ForEach(point => point.y *= -1);
-
-//        HitBoxOverride _ = new HitBoxOverride(
-//            name: hitBoxOverride.StateName,
-//            points: _points.ToArray());
-
-//        return _.Override(collider, time);
-//    }
-//    public static IEnumerator OverrideInverseY(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-//    {
-//        List<Vector2> _points = hitBoxOverride.Points
-//            .ToList();
-//        _points.ForEach(point => point.y *= -1);
-
-//        HitBoxOverride _ = new HitBoxOverride(
-//            name: hitBoxOverride.StateName,
-//            points: _points.ToArray());
-
-//        return _.Override(collider);
-//    }
-//    public static IEnumerator OverrideInverse(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider, float time)
-//    {
-//        List<Vector2> _points = hitBoxOverride.Points
-//            .ToList();
-//        _points.ForEach(point => { point.x *= -1; point.y *= -1; });
-
-//        HitBoxOverride _ = new HitBoxOverride(
-//            name: hitBoxOverride.StateName,
-//            points: _points.ToArray());
-
-//        return _.Override(collider, time);
-//    }
-//    public static IEnumerator OverrideInverse(this HitBoxOverride hitBoxOverride, PolygonCollider2D collider)
-//    {
-//        List<Vector2> _points = hitBoxOverride.Points
-//            .ToList();
-//        _points.ForEach(point => { point.x *= -1; point.y *= -1; });
-
-//        HitBoxOverride _ = new HitBoxOverride(
-//            name: hitBoxOverride.StateName,
-//            points: _points.ToArray());
-
-//        return _.Override(collider);
-//    }
-//}
-
 /// <summary>
 /// Collection of posible effect names.
 /// </summary>

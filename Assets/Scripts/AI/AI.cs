@@ -16,10 +16,10 @@ public abstract class AI : MonoBehaviour
     [Range(0.1f, 5)]
     protected float Visibility = 2;
     [SerializeField]
-    [Range(1, 6)]
+    [Range(1, 5)]
     protected float Aggresion = 3;
     [SerializeField]
-    [Range(1, 6)]
+    [Range(1, 5)]
     protected float Defense = 3;
     protected float maxJumpHeight;
     protected bool changeWalkDirection = false;
@@ -124,18 +124,21 @@ public abstract class AI : MonoBehaviour
         }
 
         // Debug section
-        Debug.DrawLine(
+        if (DeveloperMenuController.viewAIRaytrace)
+        {
+            Debug.DrawLine(
             start: new Vector2(back, bottom),
             end: new Vector2(back, bottom) + (-direction * DetectionRange),
             color: Color.yellow);
-        Debug.DrawLine(
-            start: new Vector2(back, (top - bottom) * 0.5f),
-            end: new Vector2(back, (top - bottom) * 0.5f) + (-direction * DetectionRange),
-            color: Color.yellow);
-        Debug.DrawLine(
-            start: new Vector2(back, top),
-            end: new Vector2(back, top) + (-direction * DetectionRange),
-            color: Color.yellow);
+            Debug.DrawLine(
+                start: new Vector2(back, (top - bottom) * 0.5f),
+                end: new Vector2(back, (top - bottom) * 0.5f) + (-direction * DetectionRange),
+                color: Color.yellow);
+            Debug.DrawLine(
+                start: new Vector2(back, top),
+                end: new Vector2(back, top) + (-direction * DetectionRange),
+                color: Color.yellow);
+        }
         // Debug end
 
         // Detect if an enemy is visible
@@ -143,7 +146,7 @@ public abstract class AI : MonoBehaviour
             origin: new Vector2(
                 x: side,
                 y: top),
-            direction: LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * -direction,
+            direction: LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * direction,
             distance: Visibility,
             layerMask: layerMask);
         ray2 = Physics2D.Raycast(
@@ -172,18 +175,33 @@ public abstract class AI : MonoBehaviour
 
 
         // Debug section
-        Debug.DrawLine(
+        //Debug.DrawLine(
+        //    start: new Vector2(side, top),
+        //    end: new Vector2(side, top) + (LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * direction * DetectionRange),
+        //    color: Color.yellow);
+        //Debug.DrawLine(
+        //    start: new Vector2(side, top),
+        //    end: new Vector2(side, top) + (direction * DetectionRange),
+        //    color: Color.yellow);
+        //Debug.DrawLine(
+        //    start: new Vector2(side, top),
+        //    end: new Vector2(side, top) + (LevelController.AngleToVector2(Self.FieldOfVision * 0.5f) * direction * DetectionRange),
+        //    color: Color.yellow);
+        if (DeveloperMenuController.viewAIRaytrace)
+        {
+            Debug.DrawRay(
             start: new Vector2(side, top),
-            end: new Vector2(side, top) + (LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * direction * DetectionRange),
+            dir: (LevelController.AngleToVector2(Self.FieldOfVision * 0.5f) * direction) * Visibility,
             color: Color.yellow);
-        Debug.DrawLine(
-            start: new Vector2(side, top),
-            end: new Vector2(side, top) + (direction * DetectionRange),
-            color: Color.yellow);
-        Debug.DrawLine(
-            start: new Vector2(side, top),
-            end: new Vector2(side, top) + (LevelController.AngleToVector2(Self.FieldOfVision * 0.5f) * direction * DetectionRange),
-            color: Color.yellow);
+            Debug.DrawRay(
+                start: new Vector2(side, top),
+                dir: direction * Visibility,
+                color: Color.yellow);
+            Debug.DrawRay(
+                start: new Vector2(side, top),
+                dir: (LevelController.AngleToVector2(360 - (Self.FieldOfVision * 0.5f)) * direction) * Visibility,
+                color: Color.yellow);
+        }
         // Debug end
 
         // Detect if before is a jumpable object and jumps over it
@@ -216,18 +234,21 @@ public abstract class AI : MonoBehaviour
                 layerMask: layerMask);
 
             // Debug section
-            Debug.DrawLine(
+            if (DeveloperMenuController.viewAIRaytrace)
+            {
+                Debug.DrawLine(
                 start: new Vector2(side, bottom),
                 end: new Vector2(side, bottom) + (direction * distance),
                 color: Color.green);
-            Debug.DrawLine(
-                start: new Vector2(side, bottom + 0.4f),
-                end: new Vector2(side, bottom + 0.4f) + (direction * distance),
-                color: Color.green);
-            Debug.DrawLine(
-                start: new Vector2(side, maxJumpHeight - 0.1f),
-                end: new Vector2(side, maxJumpHeight - 0.1f) + (direction * distance),
-                color: Color.green);
+                Debug.DrawLine(
+                    start: new Vector2(side, bottom + 0.4f),
+                    end: new Vector2(side, bottom + 0.4f) + (direction * distance),
+                    color: Color.green);
+                Debug.DrawLine(
+                    start: new Vector2(side, maxJumpHeight - 0.1f),
+                    end: new Vector2(side, maxJumpHeight - 0.1f) + (direction * distance),
+                    color: Color.green);
+            }
             // Debug end
 
             if (ray1 && ray2)
@@ -235,15 +256,22 @@ public abstract class AI : MonoBehaviour
                 if (ray2.distance <= ray1.distance && !ray3)
                 {
                     Self.Jump();
+                    Debug.Log(
+                        message: name + " jumplable obstacle found. Jumping.");
                 }
                 else
                 {
                     changeWalkDirection = true;
+                    Debug.Log(
+                        message:name+" non-jumplable obstacle found.");
                 }
             }
         }
     }
-
+    /// <summary>
+    /// Calls the function asociated with every AI state
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator StartBehaviour()
     {
         while (enabled)
@@ -282,24 +310,39 @@ public abstract class AI : MonoBehaviour
     }
     protected virtual void IdleAction()
     {
+        Debug.Log(
+            message: name + "Idle action started.");
     }
     protected virtual void CombatAction()
     {
+        Debug.Log(
+            message: name + "Combat action started.");
     }
     protected virtual void LowHealth()
     {
+        Debug.Log(
+            message: name + "Low health action started.");
     }
     protected virtual void HighHealth()
     {
+        Debug.Log(
+            message: name + "High health action started.");
     }
     protected virtual void AllyLowHealth()
     {
+        Debug.Log(
+            message: name + "Ally health low action started.");
     }
     protected virtual void EnemyLevelHigher()
     {
+        Debug.Log(
+            message: name + "Enemy level higher action started.");
     }
     protected virtual void EnemySpoted()
     {
+        Debug.Log(
+            message: name + "Enemy spoted action started.");
+
         isTargetSpoted = true;
 
         Self.AlertStatus(
@@ -319,10 +362,32 @@ public abstract class AI : MonoBehaviour
     }
     protected virtual void EnemyOutOfSight()
     {
+        Debug.Log(
+            message: name + "Enemy out of sight action started.");
+
         isTargetSpoted = false;
         currentState = AIState.Idle;
     }
+    /// <summary>
+    /// Chance of an aggresive responce between Aggresion and 10.
+    /// </summary>
+    /// <returns></returns>
+    protected float GetAggresionChance()
+    {
+        return UnityEngine.Random.Range(Aggresion, 10);
+    }
+    /// <summary>
+    /// Chance of a defensive responce between Defense and 10.
+    /// </summary>
+    /// <returns></returns>
+    protected float GetDefenseChance()
+    {
+        return UnityEngine.Random.Range(Defense, 10);
+    }
 }
+/// <summary>
+/// Possible state of a character's AI
+/// </summary>
 public enum AIState
 {
     Idle,

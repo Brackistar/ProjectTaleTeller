@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - Moving Platform
   - Platform
+  - StatModifier
   layers:
   - Default
   - TransparentFX

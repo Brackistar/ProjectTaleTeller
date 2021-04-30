@@ -62,7 +62,10 @@ public class PauseMenuController : MonoBehaviour
     //{
     //    TargetPanel.SetActive(!TargetPanel.activeSelf);
     //}
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="Target"></param>
     public void HidePanel(GameObject Target)
     {
         Target.SetActive(false);
@@ -149,6 +152,12 @@ public class PauseMenuController : MonoBehaviour
         Debug.Log(
             message: "Exiting game.");
         AppHelper.Quit();
+    }
+
+    public void DeleteSave()
+    {
+        Debug.Log(
+            message:"Deleting save.");
     }
 
     private void SetLastActive(string TargetName)

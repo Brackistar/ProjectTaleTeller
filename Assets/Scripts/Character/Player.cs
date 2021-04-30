@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void LevelUpEvent(Player source);
 public class Player : Character
 {
     [Header("Player Info")]
@@ -16,6 +18,8 @@ public class Player : Character
     private Weapon.WeaponKind AllowedWeaponKind;
     public int NextLevelXP { get; private set; }
     public bool isLevelUp { get; private set; }
+    public event LevelUpEvent OnLevelUp;
+    public event EventHandler OnLevelUpDone;
 
     protected override void Awake()
     {
@@ -29,13 +33,8 @@ public class Player : Character
         if (gameObject.layer != 8)
             gameObject.layer = 8;
 
-        //if (NextLevelXP <= 0)
-        //    NextLevelXP = GetNextLevelXP();
-
         base.Start();
 
-        //gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
-        //gameObject.GetComponent<CapsuleCollider2D>().enabled = true;
         if (Application.platform == RuntimePlatform.WindowsEditor)
         {
             CalculateMaxJumpHeight();
@@ -55,6 +54,9 @@ public class Player : Character
     /// <param name="XP">Value to add to the current XP.</param>
     public void AddXP(int XP)
     {
+        Debug.Log(
+            message: name + " gain xp: " + XP);
+
         if (CurrentXP == NextLevelXP)
             return;
         CurrentXP += XP;
@@ -63,6 +65,8 @@ public class Player : Character
             int leftXP = CurrentXP - NextLevelXP;
             CurrentXP = 0 + leftXP;
             isLevelUp = true;
+
+            OnLevelUp?.Invoke(this);
         }
     }
     /// <summary>
@@ -75,6 +79,26 @@ public class Player : Character
         CurrentLevel++;
         isLevelUp = false;
         NextLevelXP = GetNextLevelXP();
+
+        OnLevelUpDone?.Invoke(this, EventArgs.Empty);
+    }
+    /// <summary>
+    /// Change the value of the character stats.
+    /// </summary>
+    /// <param name="agility">New agility value</param>
+    /// <param name="strength">New strength value</param>
+    /// <param name="resistance">New resistance value</param>
+    /// <param name="vitality">New vitality value</param>
+    public void ChangeStatValues(int agility, int strength, int resistance, int vitality)
+    {
+        if (Agility != agility)
+            Agility = agility;
+        if (Strength != strength)
+            Strength = strength;
+        if (Resistance != resistance)
+            Resistance = resistance;
+        if (Vitality != vitality)
+            Vitality = vitality;
     }
     /// <summary>
     /// Calculate the XP needed to level up
@@ -117,16 +141,18 @@ public class Player : Character
     {
         if (collider.gameObject.CompareTag("Enemy"))
         {
-            Enemy enemy;
-            if (collider.gameObject.TryGetComponent<Enemy>(out enemy) && IsAttacking())
+            if (collider.gameObject.TryGetComponent(out Enemy enemy) && IsAttacking())
             {
-                bool enemyKilled = enemy.ReceiveAttack(
+                if (GetLuckyTry() >= enemy.GetLuckyTry())
+                {
+                    bool enemyKilled = enemy.ReceiveAttack(
                     value: GetDamage());
-                if (this.Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
-                    enemy.AddEffect(
-                        effect: this.Weapon.GetEffectName(),
-                        intensity: this.Weapon.GetEffectValue(),
-                        duration: this.Weapon.GetEffectDuration());
+                    if (this.Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
+                        enemy.AddEffect(
+                            effect: this.Weapon.GetEffectName(),
+                            intensity: this.Weapon.GetEffectValue(),
+                            duration: this.Weapon.GetEffectDuration());
+                }
             }
         }
     }

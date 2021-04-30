@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -14,6 +15,7 @@ public class PlayerInfoController : MonoBehaviour
     private TextMeshProUGUI HealthBarText;
 
     Image XPBar;
+    GameObject[] LevelUpButtons;
     private void Awake()
     {
         if (HealthBar == null)
@@ -26,6 +28,13 @@ public class PlayerInfoController : MonoBehaviour
             HealthBarText = GetComponentsInChildren<TextMeshProUGUI>()
                 .FirstOrDefault(text => text.name == "Indicator");
 
+        LevelUpButtons = new GameObject[2];
+        LevelUpButtons[0] = transform.Find("Level Up Container")
+            .gameObject;
+        LevelUpButtons[1] = transform.parent
+            .Find("Pause_Menu_Container/Pause_Menu/InnerMenuSpace/Character_Sheet/Character_Attrib_Container/Level_Up_Button")
+            .gameObject;
+
         if (ChangeTime <= 0)
             ChangeTime = 1;
     }
@@ -36,6 +45,9 @@ public class PlayerInfoController : MonoBehaviour
             .GetTotalHealth();
         HealthBar.value = LevelController.Player
             .GetCurrentHealth();
+
+        LevelController.Player.OnLevelUp += OnLevelUp;
+        LevelController.Player.OnLevelUpDone += OnLevelUpDone;
 
         SetMaxHealth();
         SetCurrentHealth();
@@ -118,6 +130,9 @@ public class PlayerInfoController : MonoBehaviour
             yield return null;
         }
     }
+    /// <summary>
+    /// Updates teh value of the player's XP bar.
+    /// </summary>
     private void ChangeXPBar()
     {
         int MaxXP = LevelController.Player.NextLevelXP,
@@ -126,5 +141,56 @@ public class PlayerInfoController : MonoBehaviour
 
         if (XPBar.fillAmount != CurrentPercent)
             XPBar.fillAmount = CurrentPercent;
+    }
+    /// <summary>
+    /// Shows the level up menu.
+    /// </summary>
+    /// <param name="source"></param>
+    private void OnLevelUp(Player source)
+    {
+        //GameObject LevelUpContainer = GameObject.Find("Level Up Container");
+        TextMeshProUGUI IndicatorText = LevelUpButtons[0]
+            .GetComponentInChildren<TextMeshProUGUI>();
+
+        IndicatorText.text = (source.Level + 1) + "!";
+        //LevelUpContainer.GetComponent<Button>()
+        //    .interactable = true;
+
+        //LevelUpContainer.SetActive(true);
+        //GameObject.Find("Character_Attrib_Container/Level_Up_Button")
+        //    .SetActive(true);
+        for (int i = 0; i < LevelUpButtons.Length; i++)
+        {
+            LevelUpButtons[i].SetActive(true);
+            LevelUpButtons[i].GetComponent<Button>()
+            .interactable = true;
+        }
+    }
+    /// <summary>
+    /// Hides the level up menu and icon.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="e"></param>
+    private void OnLevelUpDone(object source, EventArgs e)
+    {
+        //GameObject LevelUpContainer = GameObject.Find("Level Up Container");
+        //TextMeshProUGUI IndicatorText = LevelUpContainer
+        //    .GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI IndicatorText = LevelUpButtons[0]
+            .GetComponentInChildren<TextMeshProUGUI>();
+
+        IndicatorText.text = "";
+        //LevelUpContainer.GetComponent<Button>()
+        //    .interactable = false;
+
+        //LevelUpContainer.SetActive(false);
+        //GameObject.Find("Character_Sheet/Character_Attrib_Container/Level_Up_Button")
+        //    .SetActive(false);
+        for (int i = 0; i < LevelUpButtons.Length; i++)
+        {
+            LevelUpButtons[i].SetActive(false);
+            LevelUpButtons[i].GetComponent<Button>()
+            .interactable = false;
+        }
     }
 }

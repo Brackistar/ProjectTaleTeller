@@ -323,13 +323,13 @@ AnimatorState:
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 1
-  m_MirrorParameterActive: 1
+  m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 012c81c6d58a3b24ab478e752a3e8ad5, type: 2}
   m_Tag: 
   m_SpeedParameter: SizeMultiplier
-  m_MirrorParameter: 
+  m_MirrorParameter: LookingLeft
   m_CycleOffsetParameter: 
   m_TimeParameter: 
 --- !u!1101 &-3916243447172484447

@@ -23,6 +23,8 @@ public class LevelController : MonoBehaviour
     [SerializeField]
     private Shield initialShield;
 
+    private int totalLevelXP;
+
     private CameraController mainCameraController;
     private void Awake()
     {
@@ -39,6 +41,9 @@ public class LevelController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(
+            message: name + " Level start.");
+
         Player.SetWalkSound(
             sound: WalkSound);
         Player.SetJumpSound(
@@ -54,6 +59,11 @@ public class LevelController : MonoBehaviour
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
             enemy.GetComponent<Enemy>().OnDeath += OnEnemyDeath;
+            totalLevelXP += enemy.GetComponent<Enemy>()
+                .GetXP();
+
+            Debug.Log(
+                message: name + " enemy XP added, new level xp: " + totalLevelXP.ToString());
         }
         if (Time.timeScale == 0)
             Resume();
@@ -61,7 +71,13 @@ public class LevelController : MonoBehaviour
 
     private void OnEnemyDeath(Enemy enemy)
     {
-        Player.AddXP(enemy.GetXP());
+        int XP = enemy.GetXP();
+
+        Debug.Log(
+            message: name + " enemy dead. Total level XP: " + XP.ToString());
+
+        Player.AddXP(XP);
+        totalLevelXP -= XP;
         GameObject.Destroy(enemy.gameObject, 3);
     }
 
@@ -83,11 +99,23 @@ public class LevelController : MonoBehaviour
     {
         Time.timeScale = 0;
         AudioListener.pause = true;
+
+        Debug.Log(
+            message: "game paused.");
     }
     public static void Resume()
     {
         Time.timeScale = 1;
         AudioListener.pause = false;
+
+        Debug.Log(
+            message: "game resume.");
+    }
+
+    public void LevelFinished()
+    {
+        Debug.Log(
+            message: "Level finished.");
     }
 
     public Weapon GetInitialWeapon() => initialWeapon;
