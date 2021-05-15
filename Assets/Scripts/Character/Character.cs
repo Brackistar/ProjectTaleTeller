@@ -188,7 +188,7 @@ public abstract class Character : MonoBehaviour
         //    points: GetComponent<PolygonCollider2D>().points));
 
         if (Health == 0 || MaxHealth == 0)
-            LevelHealth();
+            SetHealth();
 
         float scaleArea = (float)System.Math.Round(
             value: 1 / (gameObject.transform.localScale.x * gameObject.transform.localScale.y),
@@ -1042,7 +1042,7 @@ public abstract class Character : MonoBehaviour
     /// <summary>
     /// Sets the current health and the max health based on the vitality stat.
     /// </summary>
-    private void LevelHealth()
+    protected void SetHealth()
     {
         int value = BaseHealth + (40 * Vitality);
         SetTotalHealth(value);

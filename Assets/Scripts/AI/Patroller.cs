@@ -1,17 +1,18 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Patroller : AI
 {
     [SerializeField]
+    [Tooltip("Total distance between the start and the end of the patrol area.")]
     [Range(0.5f, 5)]
-    protected float Distance;
+    protected float PatrolDistance;
     [SerializeField]
+    [Tooltip("Time in second fractions for a character to forget their current action and change state.")]
     [Range(0.1f, 1)]
     protected float AttentionSpan;
     [SerializeField]
-    protected PatrolSpeed patrolSpeed;
+    protected MoveSpeed patrolSpeed;
     /// <summary>
     /// Most at left point of patroll.
     /// </summary>
@@ -51,10 +52,10 @@ public class Patroller : AI
 
         SetPatrolLimits(
             start: new Vector2(
-                x: currentPosition.x - Distance * 0.5f,
+                x: currentPosition.x - PatrolDistance * 0.5f,
                 y: currentPosition.y),
             stop: new Vector2(
-                x: currentPosition.x + Distance * 0.5f,
+                x: currentPosition.x + PatrolDistance * 0.5f,
                 y: currentPosition.y)
             );
     }
@@ -204,31 +205,24 @@ public class Patroller : AI
         base.EnemyOutOfSight();
 
         currentState = AIState.EnemyOutOfSight;
-        StartCoroutine(WaitBeforeIdle());
-    }
-    /// <summary>
-    /// Awaits for the duration in seconds of Attetion span before changing the current state to Idle.
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator WaitBeforeIdle()
-    {
-        Debug.Log(
-            message: name + " waiting for: " + AttentionSpan.ToString() + "s before go to Idle.");
-
-        yield return new WaitForSeconds(AttentionSpan);
-
-        currentState = AIState.Idle;
+        StartCoroutine(WaitBeforeStateChange(target: AIState.Idle, time: AttentionSpan));
     }
 
     protected override void CombatAction()
     {
         base.CombatAction();
 
-        if (GetAggresionChance() > 5)
+        float AggresionChance = GetAggresionChance(),
+            DefenseChance = GetDefenseChance();
+
+        Debug.Log(
+                message: name + " Aggresion chance: " + AggresionChance.ToString() + " | Defense chance: " + DefenseChance.ToString());
+
+        if (AggresionChance > 5)
         {
             Self.Attack();
         }
-        else if (GetDefenseChance() > 5 && Vector2.Distance(Self.transform.position, Self.Target.transform.position) <= (Self.Target.GetAttackRange() + 0.5f))
+        else if (DefenseChance > 5 && Vector2.Distance(Self.transform.position, Self.Target.transform.position) <= (Self.Target.GetAttackRange() + 0.5f))
         {
             Self.Defend();
         }
@@ -252,11 +246,5 @@ public class Patroller : AI
     private void OnTriggerExit2D(Collider2D collision)
     {
 
-    }
-
-    public enum PatrolSpeed
-    {
-        walk = 1,
-        run = 8
     }
 }

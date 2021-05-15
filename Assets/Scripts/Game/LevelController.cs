@@ -31,12 +31,14 @@ public class LevelController : MonoBehaviour
         mainCameraController = Camera.main.GetComponent<CameraController>();
         audioSource = GetComponent<AudioSource>();
         Player = GameObject.FindObjectOfType<Player>();
-        if (!GameObject.Find("SceneManager"))
+#if UNITY_EDITOR
+        if (!GameObject.Find("GameManager"))
         {
-            GameObject SceneManager = Instantiate(new GameObject(), null);
-            SceneManager.name = "SceneManager";
-            SceneManager.AddComponent<LoadingManager>();
+            GameObject GameManager = Instantiate(new GameObject(), null);
+            GameManager.name = "GameManager";
+            GameManager.AddComponent<GameManager>();
         }
+#endif
     }
     // Start is called before the first frame update
     void Start()
@@ -73,12 +75,13 @@ public class LevelController : MonoBehaviour
     {
         int XP = enemy.GetXP();
 
-        Debug.Log(
-            message: name + " enemy dead. Total level XP: " + XP.ToString());
-
         Player.AddXP(XP);
+
         totalLevelXP -= XP;
+
         GameObject.Destroy(enemy.gameObject, 3);
+        Debug.Log(
+            message: name + " enemy dead. Total level XP: " + totalLevelXP.ToString());
     }
 
     // Update is called once per frame

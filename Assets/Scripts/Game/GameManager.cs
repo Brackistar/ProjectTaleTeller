@@ -4,14 +4,43 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LoadingManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private bool isLoading = false;
+    public static string savePath;
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         DontDestroyOnLoad(this);
+
+        if (!GameObject.Find("Logger"))
+        {
+            GameObject Logger = Instantiate(new GameObject(), null);
+            Logger.name = "Logger";
+            Logger.AddComponent<Logger>();
+        }
+
+        if (!GameObject.Find("NetWatcher"))
+        {
+            GameObject NetWatch = Instantiate(new GameObject(), null);
+            NetWatch.name = "NetWatcher";
+            NetWatch.AddComponent<NetHelper>();
+        }
+
+        savePath = Application.persistentDataPath;
+#if UNITY_EDITOR
+        savePath = Application.dataPath.Replace("/Assets", "");
+#endif
+
+        savePath += "/data";
+
+        System.IO.Directory.CreateDirectory(savePath);
+
+        Screen.autorotateToLandscapeLeft = true;
+        Screen.autorotateToPortrait = true;
+        Screen.orientation = ScreenOrientation.Landscape;
+        
     }
 
     // Update is called once per frame
@@ -24,7 +53,11 @@ public class LoadingManager : MonoBehaviour
         if (isLoading)
             return;
         SceneManager.LoadScene("Loading");
-        StartCoroutine(AsyncLoad(SceneName,autoLoad));
+        StartCoroutine(AsyncLoad(SceneName, autoLoad));
+    }
+    public void LoadSceneAsync(string SceneName)
+    {
+        LoadSceneAsync(SceneName, true);
     }
     private IEnumerator AsyncLoad(string SceneName, bool autoLoad)
     {
@@ -51,13 +84,13 @@ public class LoadingManager : MonoBehaviour
         {
             float progress = Mathf.Clamp01(ao.progress / 0.9f);
             Debug.Log(
-                message: "Scene load progress: " + progress*100 + "%");
+                message: "Scene load progress: " + progress * 100 + "%");
 
             GameObject.Find("Loading Bar").GetComponent<Image>().fillAmount = progress;
             if (Mathf.Approximately(ao.progress, 0.9f))
             {
                 GameObject.Find("Input Message").GetComponent<TextMeshProUGUI>().text = "Touch the screen to continue";
-                
+
                 if (Input.touchCount > 0 || autoLoad || (Application.isPlaying && Input.GetMouseButton(0)))
                 {
                     ao.allowSceneActivation = true;

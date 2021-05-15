@@ -139,8 +139,14 @@ public class PlayerInfoController : MonoBehaviour
             CurrentXP = LevelController.Player.XP,
             CurrentPercent = CurrentXP / MaxXP;
 
+        Debug.Log(
+            message: name + " Current XP: " + CurrentXP + " | Max XP: " + MaxXP);
+
         if (XPBar.fillAmount != CurrentPercent)
             XPBar.fillAmount = CurrentPercent;
+
+        Debug.Log(
+            message: name + " XP bar value: " + XPBar.fillAmount + "% | Current XP value: " + CurrentPercent + "%");
     }
     /// <summary>
     /// Shows the level up menu.

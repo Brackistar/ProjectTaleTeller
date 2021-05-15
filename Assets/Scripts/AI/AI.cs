@@ -10,9 +10,11 @@ public abstract class AI : MonoBehaviour
     protected bool isWalking;
     protected bool isTargetSpoted;
     [SerializeField]
+    [Tooltip("Distance from the back of the Character in which another character is detected.")]
     [Range(0.1f, 5)]
     protected float DetectionRange = 1;
     [SerializeField]
+    [Tooltip("Distance in front of the character for the visual field.")]
     [Range(0.1f, 5)]
     protected float Visibility = 2;
     [SerializeField]
@@ -253,17 +255,32 @@ public abstract class AI : MonoBehaviour
 
             if (ray1 && ray2)
             {
-                if (ray2.distance <= ray1.distance && !ray3)
+                //if (ray2.distance <= ray1.distance && !ray3)
+                //{
+                //    Self.Jump();
+                //    Debug.Log(
+                //        message: name + " jumplable obstacle found. Jumping.");
+                //}
+                //else
+                //{
+                //    changeWalkDirection = true;
+                //    Debug.Log(
+                //        message:name+" non-jumplable obstacle found.");
+                //}
+                if (ray2.distance <= ray1.distance)
                 {
-                    Self.Jump();
-                    Debug.Log(
-                        message: name + " jumplable obstacle found. Jumping.");
-                }
-                else
-                {
-                    changeWalkDirection = true;
-                    Debug.Log(
-                        message:name+" non-jumplable obstacle found.");
+                    if (!ray3)
+                    {
+                        Self.Jump();
+                        Debug.Log(
+                            message: name + " jumplable obstacle found. Jumping.");
+                    }
+                    else
+                    {
+                        changeWalkDirection = true;
+                        Debug.Log(
+                            message: name + " non-jumplable obstacle found.");
+                    }
                 }
             }
         }
@@ -384,6 +401,21 @@ public abstract class AI : MonoBehaviour
     {
         return UnityEngine.Random.Range(Defense, 10);
     }
+
+    /// <summary>
+    /// Awaits for some time before changing the current state to the target state.
+    /// </summary>
+    /// <param name="target">AIState of the AI after the wait.</param>
+    /// <returns></returns>
+    protected IEnumerator WaitBeforeStateChange(AIState target, float time)
+    {
+        Debug.Log(
+            message: name + " waiting for: " + time.ToString() + "s before go to state: \'" + target.ToString() + "\'");
+
+        yield return new WaitForSeconds(time);
+
+        currentState = target;
+    }
 }
 /// <summary>
 /// Possible state of a character's AI
@@ -398,4 +430,9 @@ public enum AIState
     EnemyLevelHigher,
     EnemySpoted,
     EnemyOutOfSight
+}
+public enum MoveSpeed
+{
+    walk = 3,
+    run = 5
 }

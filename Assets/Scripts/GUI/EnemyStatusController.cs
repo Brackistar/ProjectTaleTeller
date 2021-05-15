@@ -58,8 +58,8 @@ public class EnemyStatusController : MonoBehaviour
         if (gameObject.activeSelf)
             return;
 
-        GetComponent<AudioSource>().Play();
         gameObject.SetActive(true);
+        GetComponent<AudioSource>().Play();
 
         StartCoroutine(StartAlert());
     }

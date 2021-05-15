@@ -37,8 +37,8 @@ public class MainMenuController : MonoBehaviour
     {
         //SceneManager.LoadScene(
         //    sceneName: NewGameScene);
-        GameObject.Find("SceneManager")
-            .GetComponent<LoadingManager>()
+        GameObject.Find("GameManager")
+            .GetComponent<GameManager>()
             .LoadSceneAsync(NewGameScene);
     }
 }

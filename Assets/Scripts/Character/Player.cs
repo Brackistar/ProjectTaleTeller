@@ -80,6 +80,8 @@ public class Player : Character
         isLevelUp = false;
         NextLevelXP = GetNextLevelXP();
 
+        SetHealth();
+
         OnLevelUpDone?.Invoke(this, EventArgs.Empty);
     }
     /// <summary>

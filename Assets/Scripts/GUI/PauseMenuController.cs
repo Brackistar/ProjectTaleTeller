@@ -129,15 +129,15 @@ public class PauseMenuController : MonoBehaviour
 
     public void Load_Scene(string SceneName)
     {
-        GameObject.Find("SceneManager")
-            .GetComponent<LoadingManager>()
+        GameObject.Find("GameManager")
+            .GetComponent<GameManager>()
             .LoadSceneAsync(SceneName);
     }
 
     public void GotoMainMenu()
     {
-        GameObject.Find("SceneManager")
-            .GetComponent<LoadingManager>()
+        GameObject.Find("GameManager")
+            .GetComponent<GameManager>()
             .LoadSceneAsync("MainMenu", true);
     }
 
