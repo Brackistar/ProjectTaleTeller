@@ -37,10 +37,14 @@ public class GameManager : MonoBehaviour
 
         System.IO.Directory.CreateDirectory(savePath);
 
+        Screen.SetResolution(
+            width: 640,
+            height: 360,
+            fullscreen: true);
         Screen.autorotateToLandscapeLeft = true;
         Screen.autorotateToPortrait = true;
         Screen.orientation = ScreenOrientation.Landscape;
-        
+
     }
 
     // Update is called once per frame
@@ -59,7 +63,7 @@ public class GameManager : MonoBehaviour
     {
         LoadSceneAsync(SceneName, true);
     }
-    private IEnumerator AsyncLoad(string SceneName, bool autoLoad)
+    private IEnumerator AsyncLoad(string SceneName, bool autoLoad = false)
     {
         yield return null;
 

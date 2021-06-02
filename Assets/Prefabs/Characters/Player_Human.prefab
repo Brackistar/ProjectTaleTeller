@@ -61,7 +61,6 @@ GameObject:
   - component: {fileID: 2437712475516836192}
   - component: {fileID: 2437712475516836217}
   - component: {fileID: 2437712475516836218}
-  - component: {fileID: 2437712475516836194}
   - component: {fileID: 1431771609349276549}
   m_Layer: 8
   m_Name: Player_Human
@@ -288,43 +287,6 @@ MonoBehaviour:
   DeadSound: {fileID: 8300000, guid: 79e6baad2fd414b82a6d49ce1568d2e5, type: 3}
   LookingLeft: 0
   DeadSprite: {fileID: 21300000, guid: 57881c7823b751744b3dbb53c59940b4, type: 3}
-  HitBoxOverrides:
-  - StateName: Attack
-    Points:
-    - {x: 0.2981473, y: -0.9093115}
-    - {x: 0.3447732, y: -0.4194436}
-    - {x: 0.7593421, y: -0.3447605}
-    - {x: 0.5478871, y: -0.06739664}
-    - {x: 0.5707867, y: 0.4571873}
-    - {x: 0.432545, y: 0.6579205}
-    - {x: 0.1903728, y: 0.6699419}
-    - {x: 0.1349947, y: 0.3962026}
-    - {x: 0.0391885, y: 0.3795053}
-    - {x: -0.08890224, y: 0.003479302}
-    - {x: -0.3320626, y: -0.2855769}
-    - {x: -0.261744, y: -0.533507}
-    - {x: -0.4097114, y: -0.5452083}
-    - {x: -0.7535999, y: -0.845282}
-    - {x: -0.7248566, y: -0.9162253}
-    - {x: -0.5179339, y: -0.9093115}
-  - StateName: Defend
-    Points:
-    - {x: 0.2981473, y: -0.9093115}
-    - {x: 0.3151118, y: -0.398257}
-    - {x: 0.4542538, y: -0.387134}
-    - {x: 0.6792445, y: 3767223}
-    - {x: 0.6851947, y: 0.4741367}
-    - {x: 0.4112905, y: 0.6372521}
-    - {x: 0.1124101, y: 0.6486539}
-    - {x: 0.04177356, y: 0.4301012}
-    - {x: -0.04132092, y: 0.3922173}
-    - {x: -0.2087377, y: -0.02471727}
-    - {x: -0.3320626, y: -0.3913141}
-    - {x: -0.3322355, y: -0.4947366}
-    - {x: -0.5154486, y: -0.5311102}
-    - {x: -0.8205668, y: -0.7924134}
-    - {x: -0.7248566, y: -0.9162253}
-    - {x: -0.5179339, y: -0.9093115}
   weapon: {fileID: 7793152878588932575, guid: 1509e9807ec5d7a4b95ba0f16abcbd8b, type: 3}
   armor: {fileID: 2356681295603157073, guid: cc9a6ca6ad23f3c4face837b3b58df22, type: 3}
   shield: {fileID: 8529272316823560920, guid: 42cd598f0deb37249a589ff41c78d4da, type: 3}
@@ -353,22 +315,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &2437712475516836194
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2437712475516836223}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 2a92c3494bf4c6446a37582c9d1b6837, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.105743855, y: -0.9213488}
-  m_Size: {x: 0.68903005, y: 0.25461844}
-  m_Direction: 1
 --- !u!60 &1431771609349276549
 PolygonCollider2D:
   m_ObjectHideFlags: 0

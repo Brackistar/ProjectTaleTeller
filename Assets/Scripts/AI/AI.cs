@@ -25,6 +25,7 @@ public abstract class AI : MonoBehaviour
     protected float Defense = 3;
     protected float maxJumpHeight;
     protected bool changeWalkDirection = false;
+    protected bool isFallAhead = false;
 
     public AIState currentState { get; protected set; }
 
@@ -283,7 +284,61 @@ public abstract class AI : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                isFallAhead = DetectFall();
+            }
         }
+    }
+    private bool DetectFall()
+    {
+        // Detects if there is a fall in front
+        CircleCollider2D feetCollider = transform.Find("Feet")
+        .GetComponent<CircleCollider2D>();
+
+        Vector2 FeetSidePoint,
+            FarSidePoint;
+
+        RaycastHit2D ray1,
+            ray2;
+
+        int layerMask = 1 << 10;
+
+
+
+        if (Self.MovingLeft)
+        {
+            FeetSidePoint = new Vector2(
+                x: feetCollider.transform.position.x - (feetCollider.radius * 2),
+                y: feetCollider.transform.position.y);
+
+            FarSidePoint = FeetSidePoint + (0.25f * Vector2.left);
+        }
+        else
+        {
+            FeetSidePoint = new Vector2(
+                x: feetCollider.transform.position.x,
+                y: feetCollider.transform.position.y);
+
+            FarSidePoint = FeetSidePoint + (0.25f * Vector2.right);
+        }
+
+        ray1 = Physics2D.Raycast(
+                origin: FeetSidePoint,
+                direction: Vector2.down,
+                distance: feetCollider.radius + 0.1f,
+                layerMask: layerMask);
+
+        ray2 = Physics2D.Raycast(
+            origin: FarSidePoint,
+            direction: Vector2.down,
+            distance: feetCollider.radius + 0.3f,
+            layerMask: layerMask);
+
+        Debug.Log(
+            message: name + " detecting fall. Feet side ray: \'" + (bool)ray1 + "\' Front ray: \'" + (bool)ray2 + "\'");
+
+        return ray1 && !ray2;
     }
     /// <summary>
     /// Calls the function asociated with every AI state
@@ -433,6 +488,6 @@ public enum AIState
 }
 public enum MoveSpeed
 {
-    walk = 3,
-    run = 5
+    walk = 1,
+    run = 3
 }

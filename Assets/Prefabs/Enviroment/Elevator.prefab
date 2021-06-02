@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 621628522841982323}
   - component: {fileID: 621628522841982322}
   - component: {fileID: 3758138485252619875}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Elevator
   m_TagString: Moving Platform
   m_Icon: {fileID: 0}

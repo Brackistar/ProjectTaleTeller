@@ -19,17 +19,17 @@ public class EnemyHealthBar : MonoBehaviour
         this.targetCanvas = healthBarPanel;
         healthBar = GetComponent<RectTransform>();
         enemy = target;
-        RepositionHealthBar();
-        CalculateFill();
+        Reposition();
+        Fill();
         healthBar.gameObject.SetActive(true);
     }
 
-    private void OnHealthChanged(float healthFill)
-    {
-        healthBar.GetComponent<Image>().fillAmount = healthFill;
-    }
+    //private void OnHealthChanged(float healthFill)
+    //{
+    //    healthBar.GetComponent<Image>().fillAmount = healthFill;
+    //}
 
-    public void CalculateFill()
+    public void Fill()
     {
         float currHealth = enemy.GetCurrentHealth(),
             maxHealth = enemy.GetTotalHealth();
@@ -37,10 +37,14 @@ public class EnemyHealthBar : MonoBehaviour
             value: currHealth / maxHealth,
             digits: 1);
         if (fill != healthBar.GetComponent<Image>().fillAmount)
-            OnHealthChanged(fill);
+            //OnHealthChanged(fill);
+            healthBar.GetComponent<Image>().fillAmount = fill;
+
+        Debug.Log(
+            message: enemy.name + " current health: \'" + currHealth / maxHealth + "%\' health bar current fill: \'" + fill + "%\'");
     }
 
-    private void RepositionHealthBar()
+    public void Reposition()
     {
         float headPosition = enemy.transform.TransformPoint(enemy.GetComponents<PolygonCollider2D>()
             .FirstOrDefault(_ => _.enabled).points
@@ -57,12 +61,18 @@ public class EnemyHealthBar : MonoBehaviour
 
         //now you can set the position of the ui element
         healthBar.anchoredPosition = WorldObject_ScreenPosition;
+        Debug.Log(
+            message: enemy.name + " health bar position changed to: " + WorldObject_ScreenPosition.ToString());
     }
 
     // Update is called once per frame
-    void Update()
+    //void Update()
+    //{
+    //    Reposition();
+    //    Fill();
+    //}
+    private void OnDestroy()
     {
-        RepositionHealthBar();
-        CalculateFill();
+        Destroy(gameObject);
     }
 }

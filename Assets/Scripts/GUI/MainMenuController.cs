@@ -30,7 +30,8 @@ public class MainMenuController : MonoBehaviour
     {
         Debug.Log(
             message: "Exiting game.");
-        Application.Quit(0);
+        //Application.Quit(0);
+        AppHelper.Quit();
     }
 
     public void NewGame()

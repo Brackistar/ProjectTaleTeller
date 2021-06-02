@@ -119,17 +119,20 @@ public class Patroller : AI
                 FarSidePoint = FeetSidePoint + (0.25f * Vector2.right);
             }
 
-            ray1 = Physics2D.Raycast(
-                origin: FeetSidePoint,
-                direction: Vector2.down,
-                distance: feetCollider.radius + 0.1f,
-                layerMask: layerMask);
+            //ray1 = Physics2D.Raycast(
+            //    origin: FeetSidePoint,
+            //    direction: Vector2.down,
+            //    distance: feetCollider.radius + 0.1f,
+            //    layerMask: layerMask);
 
-            ray2 = Physics2D.Raycast(
-                origin: FarSidePoint,
-                direction: Vector2.down,
-                distance: feetCollider.radius + 0.3f,
-                layerMask: layerMask);
+            //ray2 = Physics2D.Raycast(
+            //    origin: FarSidePoint,
+            //    direction: Vector2.down,
+            //    distance: feetCollider.radius + 0.3f,
+            //    layerMask: layerMask);
+
+            //Debug.Log(
+            //    message: name + " detecting fall. Feet side ray: \'" + ray1 + "\' Front ray: \'" + ray2 + "\'");
 
             // Debug Section
             if (DeveloperMenuController.viewAIRaytrace)
@@ -145,7 +148,7 @@ public class Patroller : AI
             }
             // End debug
 
-            if (ray1 && !ray2)
+            if (isFallAhead)
             {
                 Debug.Log(
                     message: name + " fall detected, changing patrol direction.");

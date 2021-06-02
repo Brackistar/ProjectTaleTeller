@@ -170,7 +170,7 @@ public class OpinionFormController : MonoBehaviour
 
     private IEnumerator SendFormAsync()
     {
-        yield return new WaitForFixedUpdate();
+        yield return null;
         string subject = "Opinion form " +
             DateTime.Now.ToString("g");
         string body = "<html><head><title>Opinion form</title></head>" +

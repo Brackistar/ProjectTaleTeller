@@ -7,12 +7,17 @@ public class DeveloperMenuController : MonoBehaviour
 {
     public static bool viewAIRaytrace { get; private set; }
     TextMeshProUGUI FPSCounterText;
+    Button ActivationButton;
     private void Awake()
     {
         if (!FPSCounterText)
             FPSCounterText = transform.Find("FPSCounter")
                 .Find("Value")
                 .GetComponent<TextMeshProUGUI>();
+
+        if (!ActivationButton)
+            ActivationButton = GameObject.Find("Debug Button")
+                .GetComponent<Button>();
 
         viewAIRaytrace = false;
     }

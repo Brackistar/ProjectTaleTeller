@@ -83,38 +83,82 @@ public class NetHelper : MonoBehaviour
         }
     }
 
-    public static bool SendMail(string subject, string body, IEnumerable<string> attachments = null, bool HTMLBody = false)
+    public static bool SendMail(string subject, string body, IEnumerable<Attachment> attachments = null, bool HTMLBody = false)
     {
         bool result = false;
         if (InternetAvaible)
         {
             try
             {
-                MailMessage mail = new MailMessage(
-                    from: new MailAddress(From),
-                    to: new MailAddress(To))
+                using (MailMessage mail = new MailMessage())
                 {
-                    Subject = subject,
-                    Body = body
-                };
+                    //MailMessage mail = new MailMessage(
+                    //from: new MailAddress(From),
+                    //to: new MailAddress(To))
+                    //{
+                    //    Subject = subject,
+                    //    Body = body
+                    //};
+                    mail.From = new MailAddress(From);
+                    mail.To.Add(new MailAddress(To));
+                    mail.Subject = subject;
+                    mail.Body = body;
 
-                if (attachments != null)
-                    foreach (string savePath in attachments)
-                        mail.Attachments.Add(
-                            new Attachment(savePath));
+                    if (attachments != null)
+                        foreach (Attachment attachment in attachments)
+                            mail.Attachments.Add(attachment);
 
-                mail.IsBodyHtml = HTMLBody;
+                    mail.IsBodyHtml = HTMLBody;
 
-                SmtpClient smtpClient = new SmtpClient(
-                    host: smtp,
-                    port: port);
-                smtpClient.Credentials = new NetworkCredential(
-                    userName: From,
-                    password: Password);
-                smtpClient.EnableSsl = true;
+                    using (SmtpClient smtpClient = new SmtpClient())
+                    {
+                        smtpClient.Host = smtp;
+                        smtpClient.Port = port;
+                        smtpClient.Credentials = new NetworkCredential(
+                            userName: From,
+                            password: Password);
+                        smtpClient.EnableSsl = true;
+                        smtpClient.Send(mail);
+                    }
+                    result = true;
+                }
+                //MailMessage mail = new MailMessage(
+                //    from: new MailAddress(From),
+                //    to: new MailAddress(To))
+                //{
+                //    Subject = subject,
+                //    Body = body
+                //};
 
-                smtpClient.Send(mail);
-                result = true;
+                //if (attachments != null)
+                //    foreach (string savePath in attachments)
+                //        mail.Attachments.Add(
+                //            new Attachment(savePath));
+
+                //mail.IsBodyHtml = HTMLBody;
+
+                ////SmtpClient smtpClient = new SmtpClient(
+                ////    host: smtp,
+                ////    port: port);
+                ////smtpClient.Credentials = new NetworkCredential(
+                ////    userName: From,
+                ////    password: Password);
+                ////smtpClient.EnableSsl = true;
+
+                ////smtpClient.Send(mail);
+                ////result = true;
+
+                //using (SmtpClient smtpClient = new SmtpClient())
+                //{
+                //    smtpClient.Host = smtp;
+                //    smtpClient.Port = port;
+                //    smtpClient.Credentials = new NetworkCredential(
+                //        userName: From,
+                //        password: Password);
+                //    smtpClient.EnableSsl = true;
+                //    smtpClient.Send(mail);
+                //}
+                //result = true;
             }
             catch (Exception e)
             {

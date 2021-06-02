@@ -17,7 +17,7 @@ public class Logger : MonoBehaviour
     private string savePath;
     public bool allowSave = true;
     /// <summary>
-    /// Time period collected on the logfile.
+    /// Time period in minutes collected on the logfile.
     /// </summary>
     public float time = 1f;
     public string FileName;
@@ -51,20 +51,72 @@ public class Logger : MonoBehaviour
         int currentTry = 0;
         do
         {
-            string subject = "Log file device: " +
+            try
+            {
+                string subject = "Log file device: " +
                 "\'" + SystemInfo.deviceUniqueIdentifier + "\'" +
                 "date: " + DateTime.Now.ToString("g");
 
-            bool result = NetHelper.SendMail(
-                subject: subject,
-                body: "",
-                attachments: new string[] { savePath });
+                bool result = false;
+                //using (FileStream stream = File.Open(savePath, FileMode.Open))
+                //{
+                //    result = NetHelper.SendMail(
+                //        subject: subject,
+                //        body: "",
+                //        attachments: new Attachment[] { new Attachment(stream, Path.GetFileName(savePath)) });
+                //}
 
-            if (result)
-            {
-                File.Delete(savePath);
-                break;
+                using (FileStream stream = File.Open(savePath, FileMode.Open))
+                {
+                    using (MemoryStream memoryStream = new MemoryStream(AppHelper.GetCompressedFile(
+                        content: new AppHelper.VirtualFile[] {
+                            new AppHelper.VirtualFile(
+                                Name: Path.GetFileName(savePath),
+                                Content: stream)
+                            })
+                        ))
+                    {
+                        result = NetHelper.SendMail(
+                            subject: subject,
+                            body: "Log file attached.",
+                            attachments: new Attachment[] {
+                                new Attachment(
+                                    contentStream:memoryStream,
+                                    name: Path.GetFileName(savePath)
+                                        .Replace(FileType,"zip"))
+                            });
+                    }
+                }
+
+                //bool result = NetHelper.SendMail(
+                //    subject: subject,
+                //    body: "",
+                //    attachments: new string[] { savePath });
+
+                if (result)
+                {
+                    File.Delete(savePath);
+                    break;
+                }
             }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+            //string subject = "Log file device: " +
+            //    "\'" + SystemInfo.deviceUniqueIdentifier + "\'" +
+            //    "date: " + DateTime.Now.ToString("g");
+
+            //bool result = NetHelper.SendMail(
+            //    subject: subject,
+            //    body: "",
+            //    attachments: new string[] { savePath });
+
+            //if (result)
+            //{
+            //    File.Delete(savePath);
+            //    break;
+            //}
 
             currentTry++;
 

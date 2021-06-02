@@ -8,9 +8,10 @@ public class Enemy : Character
     // Health bar   
     [SerializeField]
     private GameObject HealthBarPrefab;
-    private EnemyHealthBar healthBar;
+    //private EnemyHealthBar healthBar;
     [SerializeField]
     private EnemyStatusController EnemySpotedAlert;
+    private EnemyHealthBar HealthBar;
     // A.I. related
     [SerializeField]
     [Range(2, 5)]
@@ -29,19 +30,25 @@ public class Enemy : Character
     {
         base.Start();
 
-        GameObject HealthBar = Instantiate<GameObject>(HealthBarPrefab);
+        //GameObject healthBar = Instantiate(HealthBarPrefab);
+        HealthBar = Instantiate(HealthBarPrefab)
+            .GetComponent<EnemyHealthBar>();
         RectTransform canvas = GameObject.Find("HealthBars_Container").GetComponent<RectTransform>();
-        HealthBar.GetComponent<EnemyHealthBar>().SetHealthBarData(
+
+        //healthBar.GetComponent<EnemyHealthBar>().SetHealthBarData(
+        //    target: this,
+        //    healthBarPanel: canvas);
+        HealthBar.SetHealthBarData(
             target: this,
             healthBarPanel: canvas);
 
-        healthBar = HealthBar.GetComponent<EnemyHealthBar>();
+
 
         HealthBar.transform.SetParent(
             parent: canvas,
             worldPositionStays: false);
 
-        this.EnemySpotedAlert = Instantiate(
+        EnemySpotedAlert = Instantiate(
             original: EnemySpotedAlert.gameObject)
             .GetComponent<EnemyStatusController>();
 
@@ -59,15 +66,24 @@ public class Enemy : Character
     protected override void Update()
     {
         base.Update();
+        if (!HasHealth)
+            return;
 
-        if (IsDead)
-            OnDeath?.Invoke(this);
+        Debug.Log(
+            message: name + " enemy updating.");
+
+        EnemySpotedAlert.Reposition();
+
+        HealthBar.Reposition();
+        HealthBar.Fill();
+        //if (IsDead)
+        //    OnDeath?.Invoke(this);
     }
 
     public int GetXP()
     {
-        if (HasHealth)
-            return 0;
+        //if (HasHealth)
+        //    return 0;
         return CurrentXP;
     }
 
@@ -79,6 +95,8 @@ public class Enemy : Character
         switch (state)
         {
             case AIState.EnemySpoted:
+                if (!HasHealth)
+                    break;
                 EnemySpotedAlert.EnableAlert();
                 break;
         }
@@ -86,12 +104,21 @@ public class Enemy : Character
 
     protected override void Death()
     {
+        if (!HasHealth)
+            return;
         base.Death();
+        OnDeath?.Invoke(this);
         gameObject.layer = 9;
+
+        Destroy(gameObject, 1);
+        Destroy(EnemySpotedAlert);
+        Destroy(HealthBar);
     }
 
     protected override void OnWeaponAttackHit(Collider2D collider)
     {
+        if (!HasHealth)
+            return;
         if (collider.gameObject.CompareTag("Player"))
         {
             Character player;
@@ -113,6 +140,6 @@ public class Enemy : Character
     {
         Weapon.OnAttackHit -= OnWeaponAttackHit;
         GameObject.Destroy(Weapon.gameObject);
-        Destroy(healthBar);
+        Destroy(HealthBar);
     }
 }

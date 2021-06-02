@@ -57,7 +57,7 @@ public abstract class Character : MonoBehaviour
     protected int Vitality = 1;
     [SerializeField]
     [Range(1, 10)]
-    protected int Luck = 1;
+    protected int Luck = 5;
 
     // Audio related variables
     [Space]
@@ -206,8 +206,15 @@ public abstract class Character : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        if (Health <= 0 && isAlive)
-            Death();
+        if (Health <= 0)
+        {
+            if (isAlive)
+                Death();
+            return;
+        }
+
+        Debug.Log(
+            message: name + " character updating.");
 
         if (EffectDurations.Any(x => x <= 0))
         {
@@ -225,7 +232,7 @@ public abstract class Character : MonoBehaviour
         CircleCollider2D feetCollider = transform.Find("Feet")
             .GetComponent<CircleCollider2D>();
         Vector2 feetheight = new Vector2(
-            x: feetCollider.transform.position.x,
+            x: feetCollider.transform.position.x - feetCollider.radius * 0.5f,
             y: feetCollider.transform.position.y - feetCollider.radius);
 
         float distanceToGround = Mathf.Abs((float)Math.Round(
@@ -238,9 +245,13 @@ public abstract class Character : MonoBehaviour
         if (!isOnGround && lastHeight > transform.position.y)
             isFalling = true;
 
-        if (distanceToGround <= 0.01f /*&& !animator.GetBool("Grounded")*/ && isFalling)
+        if (distanceToGround <= 0.01f /*&& !animator.GetBool("Grounded")*/ /*&& isFalling*/)
         {
             Ground();
+        }
+        else if (distanceToGround > 0.01f)
+        {
+            isOnGround = false;
         }
         //else if (distanceToGround > 0.01f && isOnGround)
         //{
@@ -250,6 +261,9 @@ public abstract class Character : MonoBehaviour
 
         if (isFalling)
             fallingTime += Time.deltaTime;
+        // Kills the character if it falls for more than 30 seconds
+        if (fallingTime == 30)
+            Death();
 
         //RefreshPolygonCollider();
 
@@ -322,6 +336,9 @@ public abstract class Character : MonoBehaviour
 
         Debug.Log(name + ": movement speed: " + direction * CalculateSpeed());
         transform.Translate(direction * CalculateSpeed());
+        //GetComponent<Rigidbody2D>().AddForce(
+        //    force: direction * CalculateSpeed(),
+        //    mode: ForceMode2D.Impulse);
     }
     /// <summary>
     /// Starts the attack animation.
@@ -421,7 +438,9 @@ public abstract class Character : MonoBehaviour
     /// </summary>
     protected virtual void Death()
     {
-        if (!isAlive || isHit)
+        //if (!isAlive || isHit)
+        //    return;
+        if (!isAlive)
             return;
 
         isAlive = false;
@@ -432,6 +451,7 @@ public abstract class Character : MonoBehaviour
 
         Debug.Log(
             message: name + " is dead");
+        //Destroy(gameObject, 3);
     }
     /// <summary>
     /// Reproduces the sound of falling to the ground.
@@ -444,40 +464,40 @@ public abstract class Character : MonoBehaviour
         isOnGround = true;
 
         Debug.Log(
-            message: name + "grounded.");
+            message: name + " grounded.");
 
-        if (BaseFallDamage > 0)
-        {
-            float fallDistance = (float)Math.Round(
-                value: Mathf.Abs(Physics2D.gravity.y) * Time.deltaTime * Mathf.Pow(fallingTime, 2) / 2,
-                digits: 3);
-            Debug.Log(
-                message: name + " fall distance: \'" + fallDistance.ToString() + "\' min fall for damage : \'" + BaseFallLenght.ToString() + "\'");
+        //if (BaseFallDamage > 0)
+        //{
+        //    float fallDistance = (float)Math.Round(
+        //        value: Mathf.Abs(Physics2D.gravity.y) * Time.deltaTime * Mathf.Pow(fallingTime, 2) / 2,
+        //        digits: 3);
+        //    Debug.Log(
+        //        message: name + " fall distance: \'" + fallDistance.ToString() + "\' min fall for damage : \'" + BaseFallLenght.ToString() + "\'");
 
-            if (fallDistance >= DeadFallDistance)
-            {
-                Debug.Log(
-                    message: name + " dead fall. Dead fall distance: \'" + DeadFallDistance.ToString() + "\'");
-                Death();
-                return;
-            }
+        //    if (fallDistance >= DeadFallDistance)
+        //    {
+        //        Debug.Log(
+        //            message: name + " dead fall. Dead fall distance: \'" + DeadFallDistance.ToString() + "\'");
+        //        Death();
+        //        return;
+        //    }
 
-            int minFallLenght = BaseFallLenght;
-            if (fallDistance > minFallLenght)
-            {
-                float damage = (fallDistance - minFallLenght) * BaseFallDamage;
+        //    int minFallLenght = BaseFallLenght;
+        //    if (fallDistance > minFallLenght)
+        //    {
+        //        float damage = (fallDistance - minFallLenght) * BaseFallDamage;
 
-                Debug.Log(
-                    message: name + " raw fall damage: " + damage.ToString());
+        //        Debug.Log(
+        //            message: name + " raw fall damage: " + damage.ToString());
 
-                damage -= damage * (GetArmorlessDefense() * 0.5f);
+        //        damage -= damage * (GetArmorlessDefense() * 0.5f);
 
-                Debug.Log(
-                    message: name + " applied damage: \'" + damage + "\'");
+        //        Debug.Log(
+        //            message: name + " applied damage: \'" + damage + "\'");
 
-                Damage(damage);
-            }
-        }
+        //        Damage(damage);
+        //    }
+        //}
 
         fallingTime = 0;
         StartCoroutine(PlayAnimationSound("Ground"));
@@ -684,15 +704,17 @@ public abstract class Character : MonoBehaviour
         return Vitality;
     }
     /// <summary>
-    /// Returns a random number between the character's luck value and 10.
+    /// Returns a random number between the 0 and character's Luck value.
     /// </summary>
     /// <returns></returns>
     public int GetLuckyTry()
     {
-        if (Luck == 10)
-            return 10;
+        //if (Luck == 10)
+        //    return 10;
 
-        int result = UnityEngine.Random.Range(this.Luck, 10);
+        //int result = UnityEngine.Random.Range(this.Luck, 10);
+
+        int result = UnityEngine.Random.Range(min: 0, max: Luck);
 
         Debug.Log(
             message: name + " lucky try result: \'" + result.ToString() + "\'");
@@ -963,9 +985,12 @@ public abstract class Character : MonoBehaviour
         //float result = (float)System.Math.Round(
         //    value: (BaseSpeed + (Agility * 0.1f)) * Time.deltaTime,
         //    digits: 2);
-        float result = (float)System.Math.Round(
-            value: (BaseSpeed + (Agility * 0.01f)) * Time.deltaTime,
+        float result = (float)Math.Round(
+            value: (BaseSpeed + Agility * 0.01f) * Time.deltaTime,
             digits: 2);
+
+        Debug.Log(
+            message: name + " calculated movement speed: " + result);
         return result;
     }
     /// <summary>
@@ -1100,6 +1125,9 @@ public abstract class Character : MonoBehaviour
     /// <returns>Character is dead after attack.</returns>
     public virtual bool ReceiveAttack(float value)
     {
+        if (1 + GetLuckyTry() >= 5)
+            value = 0;
+
         Debug.Log(
             message: name + " attack received for: " + value.ToString() + " damage.");
         float protection = GetDefense();
@@ -1176,58 +1204,228 @@ public abstract class Character : MonoBehaviour
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
 
+        //if (collision.otherCollider.name == "Feet")
+        //{
+        //Vector3 hit = collision.contacts[0].normal;
+        //Debug.Log(
+        //    message: name + hit);
+
+        //float angle = Vector3.Angle(hit, Vector3.up);
+        ///** This short is used to represent the relative position of the character to the collision target.
+        // *  0 = up
+        // *  1 = right
+        // *  2 = down
+        // *  3 = left
+        //**/
+        //short position = 4;
+
+        //if (Mathf.Approximately(angle, 0))
+        //{
+        //    //Down
+        //    Debug.Log(
+        //        message: name + " collision direction: \'Down\'");
+        //    position = 2;
+        //}
+        //else if (Mathf.Approximately(angle, 180))
+        //{
+        //    //Up
+        //    Debug.Log(
+        //        message: name + " collision direction: \'Up\'");
+        //    position = 0;
+        //}
+        //else if (Mathf.Approximately(angle, 90))
+        //{
+        //    // Sides
+        //    Vector3 cross = Vector3.Cross(Vector3.forward, hit);
+        //    if (cross.y > 0)
+        //    { // left side of the player
+        //        Debug.Log(
+        //        message: name + " collision direction: \'Left\'");
+        //        position = 3;
+        //    }
+        //    else
+        //    { // right side of the player
+        //        Debug.Log(
+        //        message: name + " collision direction: \'Right\'");
+        //        position = 1;
+        //    }
+        //}
+        short position = GetCollisionDirection(collision.contacts[0].normal);
+
         switch (collision.gameObject.tag)
         {
-            //case "Ground":
             case "Enemy":
             case "Player":
                 Ground();
                 isOverPlatform = false;
                 break;
             case "Moving Platform":
-                //Ground();
+                if (position != 2)
+                    break;
+                Ground();
                 isOverPlatform = true;
                 currentParent = transform.parent;
                 transform.SetParent(
                     p: collision.collider.transform);
                 break;
             case "Platform":
-                //Ground();
+                if (position != 2)
+                    break;
+                Ground();
                 isOverPlatform = true;
                 break;
+            case "Ground":
+                if (position != 2)
+                    break;
+                Ground();
+                isOverPlatform = false;
+                break;
             case "Border":
+                if (position == 1 || position == 3)
+                {
+
+                }
                 break;
             case "DeadFall":
                 Death();
                 break;
         }
-
+        //}
     }
 
     protected virtual void OnCollisionExit2D(Collision2D collision)
     {
-        switch (collision.gameObject.tag)
+        if (collision.contactCount > 0)
         {
-            //case "Ground":
-            //    animator.SetBool("Grounded", false);
-            //    transform.SetParent(
-            //        p: currentParent);
-            //    break;
-            case "Moving Platform":
-                //animator.SetBool("Grounded", false);
-                isOverPlatform = false;
-                transform.SetParent(
-                    p: currentParent);
-                break;
-                //case "Platform":
+            //if (collision.otherCollider.gameObject.name == "Feet")
+            //{
+            short position = GetCollisionDirection(collision.contacts[0].normal);
+            switch (collision.gameObject.tag)
+            {
+                //case "Ground":
                 //    animator.SetBool("Grounded", false);
-                //    isOverPlatform = false;
                 //    transform.SetParent(
                 //        p: currentParent);
                 //    break;
+                case "Moving Platform":
+                    //animator.SetBool("Grounded", false);
+                    if (position != 2)
+                        break;
+                    isOnGround = false;
+                    isOverPlatform = false;
+                    transform.SetParent(
+                        p: currentParent);
+                    break;
+                case "Ground":
+                case "Platform":
+                    if (position != 2)
+                        break;
+                    isOverPlatform = false;
+                    isOnGround = false;
+                    break;
+                    //case "Platform":
+                    //    animator.SetBool("Grounded", false);
+                    //    isOverPlatform = false;
+                    //    transform.SetParent(
+                    //        p: currentParent);
+                    //    break;
+            }
+            //}
+        }
+    }
+    /// <summary>
+    /// Calculates the relative position of the character to the collision target.
+    /// </summary>
+    /// <param name="contactPoint"></param>
+    /// <returns> 0 = Up, 1 = Right, 2 = Down, 3 = Left, 4 = Undetermined</returns>
+
+    private short GetCollisionDirection(/*ContactPoint2D contactPoint*/ Vector3 hit)
+    {
+        //Vector3 hit = contactPoint.normal;
+        Debug.Log(
+            message: name + hit);
+
+        float angle = Vector3.Angle(hit, Vector3.up);
+        /** This short is used to represent the relative position of the character to the collision target.
+         *  0 = Undefined
+         *  1 = up
+         *  2 = right
+         *  3 = down
+         *  4 = left
+         *  5 = up/left
+         *  6 = up/right
+         *  7 = down/right
+         *  8 = down/left
+        **/
+        short position = 0;
+
+        if (AppHelper.Approximately(angle, 0, 22.5f))
+        {
+            //Down
+            Debug.Log(
+                message: name + " collision direction: \'Down\'");
+            position = 3;
+        }
+        else if (AppHelper.Approximately(angle, 180, 22.5f))
+        {
+            //Up
+            Debug.Log(
+                message: name + " collision direction: \'Up\'");
+            position = 1;
+        }
+        else if (AppHelper.Approximately(angle, 90, 22.5f))
+        {
+            // Sides
+            Vector3 cross = Vector3.Cross(Vector3.forward, hit);
+            if (cross.y > 0)
+            { // left side of the player
+                Debug.Log(
+                message: name + " collision direction: \'Left\'");
+                position = 3;
+            }
+            else
+            { // right side of the player
+                Debug.Log(
+                message: name + " collision direction: \'Right\'");
+                position = 1;
+            }
+        }
+        else if (AppHelper.Approximately(45, 22.5f))
+        {
+            Vector3 cross = Vector3.Cross(Vector3.forward, hit);
+            if (cross.y > 0)
+            {
+                Debug.Log(
+                    message: name + " collision direction: \'Down/Left");
+                position = 8;
+            }
+            else
+            {
+                Debug.Log(
+                    message: name + " collision direction: \'Down/Right");
+                position = 7;
+            }
+        }
+        else if (AppHelper.Approximately(135, 22.5f))
+        {
+            Vector3 cross = Vector3.Cross(Vector3.forward, hit);
+            if (cross.y > 0)
+            {
+                Debug.Log(
+                    message: name + " collision direction: \'Up/Left");
+                position = 5;
+            }
+            else
+            {
+                Debug.Log(
+                    message: name + " collision direction: \'Up/Right");
+                position = 6;
+            }
         }
 
+        return position;
     }
+
     protected abstract void OnWeaponAttackHit(Collider2D collider);
 }
 /// <summary>

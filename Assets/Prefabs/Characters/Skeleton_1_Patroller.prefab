@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1853528681276831597}
   - component: {fileID: 5775947346475930462}
   - component: {fileID: 1853528681276831594}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Skeleton_1_Patroller
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -261,7 +261,6 @@ MonoBehaviour:
   DeadSound: {fileID: 0}
   LookingLeft: 1
   DeadSprite: {fileID: 21300000, guid: 9f4540e95b5dfac44a0e1b9c675311b3, type: 3}
-  HitBoxOverrides: []
   weapon: {fileID: 7793152878588932575, guid: 1509e9807ec5d7a4b95ba0f16abcbd8b, type: 3}
   armor: {fileID: 2356681295603157073, guid: cc9a6ca6ad23f3c4face837b3b58df22, type: 3}
   shield: {fileID: 8529272316823560920, guid: 42cd598f0deb37249a589ff41c78d4da, type: 3}
@@ -290,7 +289,7 @@ MonoBehaviour:
   Visibility: 5
   Aggresion: 3
   Defense: 3
-  Distance: 3
+  PatrolDistance: 0
   AttentionSpan: 0.2
   patrolSpeed: 1
 --- !u!60 &1853528681276831594
@@ -308,7 +307,7 @@ PolygonCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0.10000001, y: 0, z: 2.4, w: 1.1666667}
     pivot: {x: 0.35, y: 0.35}
     oldSize: {x: 4.266667, y: 3.2}
     newSize: {x: 4.266667, y: 3.2}
@@ -343,7 +342,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7883021547303543154}
   - component: {fileID: 3447770175551421219}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Feet
   m_TagString: Untagged
   m_Icon: {fileID: 0}

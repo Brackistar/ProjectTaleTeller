@@ -145,16 +145,24 @@ public class Player : Character
         {
             if (collider.gameObject.TryGetComponent(out Enemy enemy) && IsAttacking())
             {
-                if (GetLuckyTry() >= enemy.GetLuckyTry())
-                {
-                    bool enemyKilled = enemy.ReceiveAttack(
+                //if (GetLuckyTry() >= enemy.GetLuckyTry())
+                //{
+                //    bool enemyKilled = enemy.ReceiveAttack(
+                //    value: GetDamage());
+                //    if (this.Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
+                //        enemy.AddEffect(
+                //            effect: this.Weapon.GetEffectName(),
+                //            intensity: this.Weapon.GetEffectValue(),
+                //            duration: this.Weapon.GetEffectDuration());
+                //}
+
+                bool enemyKilled = enemy.ReceiveAttack(
                     value: GetDamage());
-                    if (this.Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
-                        enemy.AddEffect(
-                            effect: this.Weapon.GetEffectName(),
-                            intensity: this.Weapon.GetEffectValue(),
-                            duration: this.Weapon.GetEffectDuration());
-                }
+                if (this.Weapon.GetEffectName() != EffectName.Normal && !enemyKilled)
+                    enemy.AddEffect(
+                        effect: this.Weapon.GetEffectName(),
+                        intensity: this.Weapon.GetEffectValue(),
+                        duration: this.Weapon.GetEffectDuration());
             }
         }
     }

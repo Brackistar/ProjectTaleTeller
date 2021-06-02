@@ -1,36 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 [RequireComponent(typeof(AudioSource))]
 public class LevelController : MonoBehaviour
 {
-    [SerializeField]
-    private AudioClip WalkSound,
-        FallSound,
-        JumpSound,
-        RunSound;
+    [Header("General Settings")]
     [SerializeField]
     private GameObject GameoverScreen;
-
+    [Header("Audio Settings")]
+    [SerializeField]
+    private AudioClip WalkSound;
+    [SerializeField]
+    private AudioClip FallSound;
+    [SerializeField]
+    private AudioClip JumpSound;
+    [SerializeField]
+    private AudioClip RunSound;
+    [SerializeField]
     private AudioSource audioSource;
-
-    public static Player Player { get; private set; }
-
+    [Header("Level Settings")]
     [SerializeField]
     private Weapon initialWeapon;
     [SerializeField]
     private Armor initialArmor;
     [SerializeField]
     private Shield initialShield;
-
+    //private LevelEndCondition levelEndCondition;
+    public static Player Player { get; private set; }
+    public static string LevelName { get; private set; }
     private int totalLevelXP;
 
     private CameraController mainCameraController;
     private void Awake()
     {
-        mainCameraController = Camera.main.GetComponent<CameraController>();
-        audioSource = GetComponent<AudioSource>();
-        Player = GameObject.FindObjectOfType<Player>();
 #if UNITY_EDITOR
         if (!GameObject.Find("GameManager"))
         {
@@ -39,6 +43,21 @@ public class LevelController : MonoBehaviour
             GameManager.AddComponent<GameManager>();
         }
 #endif
+
+        mainCameraController = Camera.main.GetComponent<CameraController>();
+        audioSource = gameObject.GetComponent<AudioSource>();
+        Player = FindObjectOfType<Player>();
+        LevelName = SceneManager.GetActiveScene().name;
+        //levelEndCondition = gameObject.GetComponent<LevelEndCondition>();
+        //levelEndCondition.OnLevelEnded += OnLevelEnd;
+        //foreach (LevelEndCondition endCondition in GameObject.FindObjectsOfType<LevelEndCondition>())
+        //{
+        //    endCondition.OnLevelEnded += OnLevelEnd;
+
+        //    Debug.Log(
+        //        message: name + " level end condition registered. Condition: \'" + endCondition.ConditionType + "\'");
+        //}
+
     }
     // Start is called before the first frame update
     void Start()
@@ -58,30 +77,60 @@ public class LevelController : MonoBehaviour
         audioSource.time = 3f;
         audioSource.Play();
 
+        short totalEnemies = 0;
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
-            enemy.GetComponent<Enemy>().OnDeath += OnEnemyDeath;
-            totalLevelXP += enemy.GetComponent<Enemy>()
-                .GetXP();
+            Enemy _ = enemy.GetComponent<Enemy>();
+            int xp = _.GetXP();
+            _.OnDeath += OnEnemyDeath;
+            totalLevelXP += xp;
+
+            totalEnemies++;
 
             Debug.Log(
-                message: name + " enemy XP added, new level xp: " + totalLevelXP.ToString());
+                message: name + " enemy XP added:" + xp + ", new level xp: " + totalLevelXP.ToString());
         }
+
+        Debug.Log(
+            message: name + " total enemy count: " + totalEnemies.ToString());
+        Debug.Log(
+            message: name + " total XP: " + totalLevelXP.ToString());
         if (Time.timeScale == 0)
             Resume();
+
+        foreach (LevelEndCondition endCondition in GameObject.FindObjectsOfType<LevelEndCondition>())
+        {
+            endCondition.OnLevelEnded += OnLevelEnd;
+
+            Debug.Log(
+                message: name + " level end condition registered. Condition: \'" + endCondition.ConditionType + "\'");
+        }
     }
 
     private void OnEnemyDeath(Enemy enemy)
     {
+        enemy.OnDeath -= OnEnemyDeath;
+
         int XP = enemy.GetXP();
 
         Player.AddXP(XP);
 
         totalLevelXP -= XP;
 
-        GameObject.Destroy(enemy.gameObject, 3);
+        //GameObject.Destroy(enemy.gameObject, 3);
         Debug.Log(
-            message: name + " enemy dead. Total level XP: " + totalLevelXP.ToString());
+            message: name + " enemy \'" + enemy.name + "\' dead. Total level XP: " + totalLevelXP.ToString());
+    }
+
+    private void OnLevelEnd()
+    {
+        foreach (LevelEndCondition endCondition in GameObject.FindObjectsOfType<LevelEndCondition>())
+            endCondition.OnLevelEnded -= OnLevelEnd;
+
+        Player.AddXP(totalLevelXP);
+        Debug.Log(
+            message: "Level finished.");
+        EndLevel();
     }
 
     // Update is called once per frame
@@ -95,7 +144,8 @@ public class LevelController : MonoBehaviour
         }
 
         if (Player.IsDead)
-            GameoverScreen.SetActive(true);
+            //GameoverScreen.SetActive(true);
+            EndLevel();
     }
 
     public static void Pause()
@@ -112,13 +162,12 @@ public class LevelController : MonoBehaviour
         AudioListener.pause = false;
 
         Debug.Log(
-            message: "game resume.");
+            message: "game resumed.");
     }
 
-    public void LevelFinished()
+    private void EndLevel()
     {
-        Debug.Log(
-            message: "Level finished.");
+        GameoverScreen.SetActive(true);
     }
 
     public Weapon GetInitialWeapon() => initialWeapon;

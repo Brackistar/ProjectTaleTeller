@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Stages/Test_Stages/Stage1/Stage_1.unity
     guid: d680d2ceaed1178479ce02421a4e69fd
+  - enabled: 1
+    path: Assets/Stages/Shared/OpinionForm.unity
+    guid: 7c05e11cae141ac43bfea941451479c0
   m_configObjects: {}

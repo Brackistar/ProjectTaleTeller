@@ -18,6 +18,8 @@ public class EnemyStatusController : MonoBehaviour
         Canvas = canvas;
         Target = target;
 
+        //Target.OnDeath += OnEnemyDeath;
+
         Reposition();
 
         gameObject.SetActive(false);
@@ -30,11 +32,13 @@ public class EnemyStatusController : MonoBehaviour
         SetInitialData(target, canvas);
     }
 
-    private void Update()
-    {
-        Reposition();
-    }
-    private void Reposition()
+    //private void Update()
+    //{
+    //    //if (!Target)
+    //    //    OnEnemyDeath(Target);
+    //    Reposition();
+    //}
+    public void Reposition()
     {
         float HeadPosition = Target.transform.TransformPoint(
             position: Target.gameObject.GetComponent<PolygonCollider2D>()
@@ -51,6 +55,9 @@ public class EnemyStatusController : MonoBehaviour
             y: (ViewPortPosition.y * Canvas.sizeDelta.y) - (Canvas.sizeDelta.y * 0.5f));
 
         GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+
+        Debug.Log(
+            message: Target.name + " status indicator new position: " + WorldObject_ScreenPosition.ToString());
     }
 
     public void EnableAlert()
@@ -68,5 +75,15 @@ public class EnemyStatusController : MonoBehaviour
     {
         yield return new WaitForSeconds(Time);
         gameObject.SetActive(false);
+    }
+
+    //private void OnEnemyDeath(Enemy enemy)
+    //{
+    //    Destroy(this);
+    //}
+
+    private void OnDestroy()
+    {
+        Destroy(gameObject); ;
     }
 }
